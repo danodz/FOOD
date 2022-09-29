@@ -4,23 +4,26 @@ export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [userLoadStatus, setUserLoadStatus] = useState("loading");
+
+    const loadUser = async ()=>{
+        setUserLoadStatus("loading");
+        setUser(null);
+        const res = await fetch("/currentUser")
+        if(res.ok) {
+            const data = await res.json()
+            if(data && data.data)
+                setUser(data.data);
+        }
+        setUserLoadStatus("idle");
+    }
 
     useEffect( ()=>{
-        fetch("/currentUser")
-        .then(res => {
-            if(res.ok) {
-                return res.json()
-            }
-        })
-        .then(results => {
-            if(results && results.data)
-                setUser(results.data)
-        })
-        .catch((err) => console.log(err))
+        loadUser();
     }, [])
     
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, loadUser, userLoadStatus }}>
             {children}
         </UserContext.Provider>
     );

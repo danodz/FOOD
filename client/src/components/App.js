@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Account from "./user/Account";
 import Profile from "./user/Profile";
 import Signout from "./user/Signout";
@@ -9,9 +9,8 @@ function App() {
     <Router>
       <Signout/>
       <Routes>
-        <Route path="/" element={<h1>HOME</h1>}/>
+        <Route path="/" element={<Link to="/account">account</Link>}/>
         <Route path="/account" element={<Account/>}/>
-        <Route path="/profile" element={<Profile/>}/>
       </Routes>
     </Router>
   );

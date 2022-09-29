@@ -6,10 +6,10 @@ import { UserContext } from "../context/UserContext";
 const Signup = ()=>{
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const [email, setEmail] = useState("")
+    const [name, setName] = useState("")
     const [showErr, setShowErr] = useState(false)
     const navigate = useNavigate()
-    const {setUser} = useContext(UserContext);
+    const {loadUser} = useContext(UserContext);
 
     const submit = async (event)=> {
         event.preventDefault();
@@ -23,12 +23,12 @@ const Signup = ()=>{
                 body: JSON.stringify({
                     username: username,
                     password: password,
-                    email: email
+                    name: name
                 })
             })
             const data = await res.json()
             if(res.ok){
-                setUser(data.data)
+                loadUser(data.data)
                 navigate("/")
             } else {
                 setShowErr(true)
@@ -47,8 +47,8 @@ const Signup = ()=>{
             <label>Password:
                 <input value={password} onChange={(event)=>{setPassword(event.target.value)}}/>
             </label>
-            <label>Email:
-                <input value={email} onChange={(event)=>{setEmail(event.target.value)}}/>
+            <label>Display name:
+                <input value={name} onChange={(event)=>{setName(event.target.value)}}/>
             </label>
             <Input type="submit" value="Sign Up"/>
             {showErr && <>username already exists</>}

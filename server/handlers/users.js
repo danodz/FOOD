@@ -9,26 +9,33 @@ const {secret} = process.env;
 //users
 const signup = async (req, res) => {
     try {
-        const exists = await db.collection("users").findOne({username: req.body.username})
-        console.log(exists)
+        const exists = await db.collection("credentials").findOne({_id: req.body.username})
+        
         if(exists){
             return res.status(409).json({ message: "username already used" });
         }
 
-        user = {
-            _id: uuidv4(),
-            username: req.body.username,
-            email: req.body.email,
+        const userId = uuidv4()
+
+        const credentials = {
+            _id: req.body.username,
+            userId: userId,
             password: bcrypt.hashSync(req.body.password, 8),
         };
+
+        const user = {
+            _id: userId,
+            name: req.body.name,
+            foods: []
+        };
+        await db.collection("credentials").insertOne(credentials);
         await db.collection("users").insertOne(user);
 
-        req.session.token = jwt.sign({ user: user._id }, secret, {
+        req.session.token = jwt.sign({ user: userId }, secret, {
             expiresIn: 86400, // 24 hours
         });
 
-        delete user.password;
-        res.status(200).json({status: 200,data:user, message: "signup success" });
+        res.status(200).json({status: 200, message: "signup success" });
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
@@ -36,7 +43,7 @@ const signup = async (req, res) => {
 
 const signin = async (req, res) => {
     try {
-        const user = await db.collection("users").findOne({username: req.body.username});
+        const user = await db.collection("credentials").findOne({_id: req.body.username});
     
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
@@ -52,13 +59,12 @@ const signin = async (req, res) => {
                 message: "Invalid Password!",
             });
         }
-        delete user.password;
     
-        req.session.token = jwt.sign({ user: user._id }, secret, {
+        req.session.token = jwt.sign({ user: user.userId }, secret, {
             expiresIn: 86400, // 24 hours
         });
     
-        return res.status(200).send({ status: 200, data: user,message: "signin success"});
+        return res.status(200).send({ status: 200, message: "signin success"});
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }

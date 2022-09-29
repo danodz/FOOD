@@ -4,15 +4,15 @@ import { UserContext } from "../context/UserContext";
 
 const Signout = ()=>{
     const navigate = useNavigate();
-    const {setUser} = useContext(UserContext);
+    const {loadUser} = useContext(UserContext);
     const logout = ()=>{
         fetch("/signout", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then(()=>{
-            setUser(null);
+        }).then(async ()=>{
+            await loadUser();
             navigate("/account");
         })
     }

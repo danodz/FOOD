@@ -9,7 +9,7 @@ const Signin = ()=>{
     const [showErr, setShowErr] = useState(false)
     const navigate = useNavigate()
     
-    const {setUser} = useContext(UserContext);
+    const {loadUser} = useContext(UserContext);
 
     const submit = async (event)=> {
         setShowErr(false)
@@ -28,7 +28,7 @@ const Signin = ()=>{
             })
             const data = await res.json()
             if(res.ok){
-                setUser(data.data)
+                loadUser()
                 navigate("/")
             } else {
                 setShowErr(true)

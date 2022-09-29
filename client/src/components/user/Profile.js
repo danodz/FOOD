@@ -5,7 +5,7 @@ const Profile = ()=>{
     const {user} = useContext(UserContext)
     return (
         <>
-            {user&&user.username}
+            {user&&user.name}
         </>
     )
 }

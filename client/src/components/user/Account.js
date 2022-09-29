@@ -1,24 +1,23 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { UserContext } from "../context/UserContext";
 import Signin from "./Signin";
 import Signup from "./Signup";
+import Profile from "./Profile";
+import { CircularProgress } from '@mui/material';
 
 const Account = ()=>{
-    const navigate = useNavigate();
-    const {user} = useContext(UserContext)
-    useEffect(()=>{
-        if(user)
-            navigate("/profile/")
-    })
+    const {userLoadStatus, user} = useContext(UserContext)
 
-    return (
-        <Wrapper>
+    return (<>
+        {userLoadStatus==="idle"?user?<Profile/>
+        :<Wrapper>
             <Signin/>
             <Signup/>
         </Wrapper>
-    )
+        :<CircularProgress/>
+        }
+    </>)
 }
 export default Account;
 
