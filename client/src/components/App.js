@@ -1,6 +1,5 @@
 import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Account from "./user/Account";
-import Profile from "./user/Profile";
 import Signout from "./user/Signout";
 
 function App() {
