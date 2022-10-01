@@ -1,10 +1,11 @@
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const fs = require('fs');
 const { v4: uuidv4 } = require("uuid");
-const anref = require("./anref")
+const anref = require("./data/anref")
+const {db} = require("./db")
 var foods = {};
 var nutrientNames = {};
-var writeReady = 1;
+var writeReady = 3;
 
 //getting foods names by id
 var foodRequest = new XMLHttpRequest();
@@ -44,7 +45,7 @@ nutrientsRequest.onload = function (e) {
             foods[nutData[i].food_code].nutrients[nutData[i].nutrient_name_id] = nutData[i].nutrient_value;
         }
         console.log("nutrients done");
-        fcenWrite();
+        submit();
     }
 }
 
@@ -60,7 +61,7 @@ measureRequest.onload = function (e) {
                 foods[measures[i].food_code].measures[uuidv4()] = {name: measures[i].measure_name, factor: measures[i].conversion_factor_value * 100};
         }
         console.log("measure done");
-        fcenWrite();
+        submit();
     }
 }
 
@@ -76,10 +77,9 @@ nutrientGroupsRequest.onload = function (e) {
             var group = {}
             group.name = groups[i].nutrient_group_name;
             group.order = groups[i].nutrient_group_order;
-            group.nutrients = [];
             nutrientGroups[groups[i].nutrient_group_id] = group;
         }
-        fs.writeFile("nutrientGroups.json", JSON.stringify(nutrientGroups), () => {console.log("nutrientGroups.json")})
+        submit();
     }
 }
 
@@ -103,28 +103,34 @@ nutrientNamesRequest.onload = function (e) {
                 anref : {}
             };
             for(j in anref.names){
-                console.log(nutName.id, anref[nutName.id])
                 if(anref[nutName.id])
                     nutName.anref[anref.names[j]] = anref[nutName.id][j]
             }
             nutrientNames[nutName.id] = nutName;
         }
 
-        fs.writeFile("nutrientNames.json", JSON.stringify(nutrientNames), () => {console.log("nutrientNames.json")})
+        submit();
     }
 }
 
-
-//nutrientGroupsRequest.send(null);
+nutrientGroupsRequest.send(null);
 nutrientNamesRequest.send(null);
-//foodRequest.send(null);
+foodRequest.send(null);
 
-function fcenWrite()
-{
+const submit = async ()=>{
     if(writeReady == 0)
     {
-        fs.writeFile("fcen.json", JSON.stringify(Object.values(foods)), () => {console.log("fcen.json")})
-        console.log("written");
+        await db.collection("foods").deleteMany({});
+        const res = await db.collection("foods").insertMany(Object.values(foods));
+        console.log("Foods added to database")
+        const nutrients = JSON.stringify({
+            groups: nutrientGroups,
+            names: nutrientNames,
+            anref: anref
+        });
+        fs.writeFile("data/nutrients.json", nutrients, () => {console.log("server nutrients.json")})
+        fs.writeFile("../client/data/nutrients.json", nutrients, () => {console.log("client nutrients.json")})
+        return;
     }
     else
     {
