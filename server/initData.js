@@ -113,9 +113,9 @@ nutrientNamesRequest.onload = function (e) {
     }
 }
 
+foodRequest.send(null);
 nutrientGroupsRequest.send(null);
 nutrientNamesRequest.send(null);
-foodRequest.send(null);
 
 const submit = async ()=>{
     if(writeReady == 0)
@@ -128,9 +128,10 @@ const submit = async ()=>{
             names: nutrientNames,
             anref: anref
         });
-        fs.writeFile("data/nutrients.json", nutrients, () => {console.log("server nutrients.json")})
-        fs.writeFile("../client/data/nutrients.json", nutrients, () => {console.log("client nutrients.json")})
-        return;
+        console.log("writing")
+        fs.writeFileSync("data/nutrients.json", nutrients)
+        fs.writeFileSync("../client/data/nutrients.json", nutrients)
+        console.log("done")
     }
     else
     {
