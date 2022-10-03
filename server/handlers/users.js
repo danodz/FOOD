@@ -95,7 +95,6 @@ const currentUser = async (req, res) => {
         return decoded.user;
     });
     const user = await db.collection("users").findOne({_id})
-    delete user.password;
     if(user)
         res.status(200).json({status: 200, data: user, message: "user retrieved"})
     else

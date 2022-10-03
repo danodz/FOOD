@@ -125,12 +125,12 @@ const submit = async ()=>{
         console.log("Foods added to database")
         const nutrients = JSON.stringify({
             groups: nutrientGroups,
-            names: nutrientNames,
+            names: Object.values(nutrientNames),
             anref: anref
         });
         console.log("writing")
         fs.writeFileSync("data/nutrients.json", nutrients)
-        fs.writeFileSync("../client/data/nutrients.json", nutrients)
+        fs.writeFileSync("../client/src/data/nutrients.json", nutrients)
         console.log("done")
     }
     else

@@ -11,9 +11,14 @@ const {
     signup,
     signin,
     signout,
-    currentUser,
-    getUserProfile
+    currentUser
 } = require("./handlers/users");
+
+const {
+    editFood,
+    getFood,
+    searchFoods
+} = require("./handlers/Foods");
 
 express()
     .use(morgan("tiny"))
@@ -25,10 +30,16 @@ express()
         httpOnly: true
     }))
 
+    //users
     .get("/currentUser", currentUser)
     .post("/signin", signin)
     .post("/signout", signout)
     .post("/signup", signup)
+
+    //foods
+    .post("/editFood", editFood)
+    .get("/searchFoods/:page", searchFoods)
+    .get("/getFood/:_id", getFood)
 
     .get("*", (req, res) => {
         res.status(404).json({
