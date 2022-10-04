@@ -60,7 +60,7 @@ const searchFoods = async (req, res)=>{
 
 const getFood = async (req, res)=>{
     const _id = req.params._id;
-    const dbRes = await db.collection("foods").findOne(_id);
+    const dbRes = await db.collection("foods").findOne({_id});
     res.status(200).json(dbRes)
 }
 
