@@ -1,9 +1,11 @@
-import useFetch from "../../hooks/useFetch"
+import SearchForm from "./SearchForm";
+import SearchResults from "./SearchResults";
+
 const Search = ()=>{
-    const [foods, status] = useFetch("/searchFoods/0")
-    console.log(foods, status)
     return (
         <>
+            <SearchForm/>
+            <SearchResults/>
         </>
     )
 }

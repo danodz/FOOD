@@ -1,8 +1,8 @@
-const FormInput = ({label, name})=>{
+const FormInput = ({label, name, defaultValue})=>{
     return (
         <div className="name">
             <label>{label}
-                <input name={name}/>
+                <input name={name} defaultValue={defaultValue?defaultValue:""}/>
             </label>
         </div>
     )

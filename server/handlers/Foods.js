@@ -5,7 +5,7 @@ const {fallback} = require("../utils")
 // get foods by range defined by pages of 50 items 
 // the page number is sent in the request 'page'
 const searchFoods = async (req, res)=>{
-    const page = parseInt(req.params.page);
+    const page = parseInt(req.params.page)-1;
     const itemsPerPage = parseInt(fallback(req.query.itemsPerPage, 50));
     const orderBy = fallback(req.query.orderBy, "name");
     const orderDir = parseInt(fallback(req.query.orderDir, 1));
@@ -27,25 +27,33 @@ const searchFoods = async (req, res)=>{
 
     //filter by search terms - sort - skip - limit
     const allFoods = await db.collection("foods").aggregate([
-            {
-                '$match': filters
-            },
-            {
-                '$sort': {
-                    [orderBy]: orderDir
-                }
-            }, {
-                '$skip': page*itemsPerPage
-            }, {
-                '$limit': itemsPerPage
+        {
+            '$match': filters,
+        }, {
+            "$facet": {
+                total:  [{ $count: "total" }],
+                foods: [
+                    {
+                        '$sort': {
+                        [orderBy]: orderDir
+                        }
+                    }, {
+                        '$skip': page*itemsPerPage
+                    }, {
+                        '$limit': itemsPerPage
+                    }
+                ]
             }
-        ]).toArray();
+        }]).toArray();
 
-    if(allFoods) {
-        res.status(200).json(allFoods);
+    if(allFoods && allFoods[0] && allFoods[0].total && allFoods[0].total[0]) {
+        res.status(200).json({
+            foods: allFoods[0].foods,
+            nbPages: Math.ceil(allFoods[0].total[0].total/itemsPerPage)
+        });
     } else {
         res.status(400).json({
-            message: "Data not found",
+            message: "no data found",
         })
     }
 }
