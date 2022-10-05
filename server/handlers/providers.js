@@ -10,6 +10,12 @@ const searchProviders = async (req, res)=>{
     const orderBy = fallback(req.query.orderBy, "name");
     const orderDir = parseInt(fallback(req.query.orderDir, 1));
 
+    if(page <= 0 || itemsPerPage >= 0){
+        return res.status(400).json({
+            message: "Invalid request",
+        })
+    }
+
     const filters = {};
     [
         "name",

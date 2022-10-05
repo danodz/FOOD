@@ -16,6 +16,8 @@ const signup = async (req, res) => {
         }
 
         const userId = uuidv4()
+        if(!userId)
+            res.status(200).json({status: 200, message: "no user currently signed in"})
 
         const credentials = {
             _id: req.body.username,
@@ -84,6 +86,8 @@ const signout = async (req, res) => {
 
 const currentUser = async (req, res) => {
     const _id = userId(req);
+    if(!userId)
+        res.status(200).json({status: 200, message: "no user currently signed in"})
     const user = await db.collection("users").findOne({_id})
     if(user)
         res.status(200).json({status: 200, data: user, message: "user retrieved"})
@@ -93,6 +97,8 @@ const currentUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const _id = userId(req);
+    if(!userId)
+        res.status(200).json({status: 200, message: "no user currently signed in"})
     console.log(req.body)
     const dbRes = await db.collection("users").updateOne({_id}, {
         "$set": req.body
@@ -125,7 +131,7 @@ const getUserProfile = async (req, res)=>{
 const userId = (req)=>{
     const token = req.session.token;
     if (!token) {
-        return res.status(200).json({status: 200, message: "no user currently signed in"})
+        return null;
     }
 
     return jwt.verify(token, secret, (err, decoded) => {

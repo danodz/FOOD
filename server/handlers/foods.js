@@ -5,10 +5,16 @@ const {fallback} = require("../utils")
 // get foods by range defined by pages of 50 items 
 // the page number is sent in the request 'page'
 const searchFoods = async (req, res)=>{
-    const page = parseInt(req.params.page)-1;
+    const page = parseInt(fallback(req.query.page, 1))-1;
     const itemsPerPage = parseInt(fallback(req.query.itemsPerPage, 50));
     const orderBy = fallback(req.query.orderBy, "name");
     const orderDir = parseInt(fallback(req.query.orderDir, 1));
+
+    if(page < 0 || itemsPerPage < 0){
+        return res.status(400).json({
+            message: "Invalid request",
+        })
+    }
 
     const filters = {};
     [

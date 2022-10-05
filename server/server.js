@@ -46,7 +46,7 @@ express()
 
     //foods
     .post("/editFood", editFood)
-    .get("/searchFoods/:page", searchFoods)
+    .get("/searchFoods", searchFoods)
     .get("/getFood/:_id", getFood)
 
     //providers

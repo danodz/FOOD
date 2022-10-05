@@ -1,21 +1,26 @@
 import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Food from "./Food/Food";
 import SearchFoods from "./Food/SearchFoods";
+import Navigation from "./Navigation";
 import SearchProviders from "./Providers/SearchProviders";
-import Account from "./user/Account";
-import Signout from "./user/Signout";
+import Foods from "./user/Foods";
+import Profile from "./user/Profile";
+import Providers from "./user/Providers";
+import RequireUser from "./user/RequireUser";
+import SignForm from "./user/SignForm";
 
 function App() {
 
   return (
     <Router>
-      <Signout/>
+      <Navigation/>
       <Routes>
-        <Route path="/" element={<Link to="/account">account</Link>}/>
-        <Route path="/account" element={<Account/>}/>
-        <Route path="/account/:section" element={<Account/>}/>
-        <Route path="/searchFoods/:page" element={<SearchFoods/>}/>
-        <Route path="/searchProviders/:page" element={<SearchProviders/>}/>
+        <Route path="/signin" element={<SignForm/>}/>
+        <Route path="/profile" element={<RequireUser><Profile/></RequireUser>}/>
+        <Route path="/foods" element={<RequireUser><Foods/></RequireUser>}/>
+        <Route path="/providers" element={<RequireUser><Providers/></RequireUser>}/>
+        <Route path="/searchFoods" element={<SearchFoods/>}/>
+        <Route path="/searchProviders" element={<SearchProviders/>}/>
         <Route path="/food/:_id" element={<Food/>}/>
       </Routes>
     </Router>

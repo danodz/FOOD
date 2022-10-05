@@ -4,10 +4,16 @@ import useFetch from "../../hooks/useFetch"
 import Pages from "./Pages"
 
 const SearchResults = ()=>{
-    const {page} = useParams()
     const [query] = useSearchParams()
-    const [foods, status] = useFetch("/searchFoods/"+page+"?name="+query.get("name"))
-    console.log(foods, status)
+    const page = query.get("page")
+    const searchParamKeys = ["name","page"];
+    const searchParams = {};
+    searchParamKeys.forEach((key)=>{
+        if(query.get(key))
+            searchParams[key] = query.get(key);
+    })
+    console.log(searchParams)
+    const [foods, status] = useFetch("/searchFoods?"+new URLSearchParams(searchParams));
     return (
         <>
         {status==="success"

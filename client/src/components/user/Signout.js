@@ -13,7 +13,7 @@ const Signout = ()=>{
             }
         }).then(async ()=>{
             await loadUser();
-            navigate("/account");
+            navigate("/signin");
         })
     }
 

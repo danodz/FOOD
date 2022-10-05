@@ -6,10 +6,9 @@ const SearchForm = ()=>{
     const submit = (event)=>{
         event.preventDefault();
         const el = event.target.elements;
-        const formData = {
-            name: el.name.value,
-        };
-        setQuery(formData)
+        query.delete("page")
+        query.set("name", el.name.value)
+        setQuery(query)
     }
     return (
         <>

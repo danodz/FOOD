@@ -1,25 +1,16 @@
-import { useContext } from "react";
 import styled from "styled-components";
-import { UserContext } from "../context/UserContext";
 import Signin from "./Signin";
 import Signup from "./Signup";
-import Profile from "./Profile";
-import { CircularProgress } from '@mui/material';
 
-const Account = ()=>{
-    const {userLoadStatus, user} = useContext(UserContext)
-
-    return (<>
-        {userLoadStatus==="idle"?user?<Profile/>
-        :<Wrapper>
+const SignForm = ()=>{
+    return (
+        <Wrapper>
             <Signin/>
             <Signup/>
         </Wrapper>
-        :<CircularProgress/>
-        }
-    </>)
+    )
 }
-export default Account;
+export default SignForm;
 
 const Wrapper = styled.div`
     margin-top: 50px;

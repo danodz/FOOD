@@ -29,7 +29,7 @@ const Signin = ()=>{
             const data = await res.json()
             if(res.ok){
                 loadUser()
-                navigate("/")
+                navigate("/profile")
             } else {
                 setShowErr(true)
             }
