@@ -24,13 +24,7 @@ const EditFood = ()=>{
       }
     });
     
-    const res = await fetch("/editFood", {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify(food)
-    })
+    const res = await basicFetch("/editFood", "POST",JSON.stringify(food))
     console.log(await res.json())
   };
 

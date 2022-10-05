@@ -1,7 +1,7 @@
 import SearchForm from "./SearchForm";
 import SearchResults from "./SearchResults";
 
-const Search = ()=>{
+const SearchProviders = ()=>{
     return (
         <>
             <SearchForm/>
@@ -9,4 +9,4 @@ const Search = ()=>{
         </>
     )
 }
-export default Search;
+export default SearchProviders;

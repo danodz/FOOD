@@ -17,9 +17,11 @@ const FormList = ({name, children, defaultValues})=>{
         newContent.splice(index, 1)
         setContent(newContent)
 
-        let newDefVals = [...defVals];
-        newDefVals.splice(index, 1)
-        setDefVals(newDefVals)
+        if(defVals){
+            let newDefVals = [...defVals];
+            newDefVals.splice(index, 1)
+            setDefVals(newDefVals)
+        }
     }
     return (
         <fieldset name={name}>

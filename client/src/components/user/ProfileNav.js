@@ -9,6 +9,7 @@ const ProfileNav = ()=>{
         <>
             <button onClick={()=>{changeSection("")}}>Profile</button>
             <button onClick={()=>{changeSection("foods")}}>Foods</button>
+            <button onClick={()=>{changeSection("providers")}}>Providers</button>
         </>
     )
 }

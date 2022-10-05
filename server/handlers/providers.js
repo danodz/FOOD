@@ -4,7 +4,7 @@ const {fallback} = require("../utils")
 
 // get foods by range defined by pages of 50 items 
 // the page number is sent in the request 'page'
-const searchFoods = async (req, res)=>{
+const searchProviders = async (req, res)=>{
     const page = parseInt(req.params.page)-1;
     const itemsPerPage = parseInt(fallback(req.query.itemsPerPage, 50));
     const orderBy = fallback(req.query.orderBy, "name");
@@ -26,13 +26,13 @@ const searchFoods = async (req, res)=>{
     });
 
     //filter by search terms - sort - skip - limit
-    const allFoods = await db.collection("foods").aggregate([
+    const allProviders = await db.collection("providers").aggregate([
         {
             '$match': filters,
         }, {
             "$facet": {
                 total:  [{ $count: "total" }],
-                foods: [
+                providers: [
                     {
                         '$sort': {
                         [orderBy]: orderDir
@@ -46,10 +46,10 @@ const searchFoods = async (req, res)=>{
             }
         }]).toArray();
 
-    if(allFoods && allFoods[0] && allFoods[0].total && allFoods[0].total[0]) {
+    if(allProviders && allProviders[0] && allProviders[0].total && allProviders[0].total[0]) {
         res.status(200).json({
-            foods: allFoods[0].foods,
-            nbPages: Math.ceil(allFoods[0].total[0].total/itemsPerPage)
+            foods: allProviders[0].providers,
+            nbPages: Math.ceil(allProviders[0].total[0].total/itemsPerPage)
         });
     } else {
         res.status(400).json({
@@ -58,19 +58,19 @@ const searchFoods = async (req, res)=>{
     }
 }
 
-const getFood = async (req, res)=>{
+const getProvider = async (req, res)=>{
     const _id = req.params._id;
-    const dbRes = await db.collection("foods").findOne({_id});
+    const dbRes = await db.collection("providers").findOne({_id});
     res.status(200).json(dbRes)
 }
 
-const editFood = async (req, res)=>{
+const editProvider = async (req, res)=>{
     try{
-    const food = req.body;
-    if(!food._id)
+    const provider = req.body;
+    if(!provider._id)
     {
-        food._id = uuidv4();
-        const dbRes = await db.collection("foods").insertOne(food);
+        provider._id = uuidv4();
+        const dbRes = await db.collection("providers").insertOne(provider);
         res.status(200).json(dbRes)
     }
     } catch(err){
@@ -80,7 +80,7 @@ const editFood = async (req, res)=>{
 }
 
 module.exports = {
-    editFood,
-    getFood,
-    searchFoods
+    editProvider,
+    getProvider,
+    searchProviders
 }

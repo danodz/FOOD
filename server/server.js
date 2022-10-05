@@ -21,6 +21,12 @@ const {
     searchFoods
 } = require("./handlers/foods");
 
+const {
+    editProvider,
+    getProvider,
+    searchProviders
+} = require("./handlers/providers");
+
 express()
     .use(morgan("tiny"))
     .use(helmet())
@@ -42,6 +48,11 @@ express()
     .post("/editFood", editFood)
     .get("/searchFoods/:page", searchFoods)
     .get("/getFood/:_id", getFood)
+
+    //providers
+    .post("/editProvider", editProvider)
+    .get("/searchProviders/:page", searchProviders)
+    .get("/getProvider/:_id", getProvider)
 
     .get("*", (req, res) => {
         res.status(404).json({
