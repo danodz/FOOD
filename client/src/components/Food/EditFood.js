@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import FormInput from "./FormInput";
-import FormList from "./FormList";
-import SelectNutrient from "./SelectNutrient";
+import FormInput from "../forms/FormInput";
+import FormList from "../forms/FormList";
+import SelectNutrient from "../forms/SelectNutrient";
 import { v4 } from "uuid";
-import { useEffect } from "react";
 
 const EditFood = ()=>{
   const submit = async (event) => {

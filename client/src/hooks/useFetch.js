@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { basicFetch } from "../utils";
 
-const useFetch = (url) =>{
+const useFetch = (url, method, body) =>{
     const [response, setResponse] = useState(null);
     const [status, setStatus] = useState("loading");
 
@@ -12,7 +13,8 @@ const useFetch = (url) =>{
 
     useEffect(()=>{
         setStatus("loading");
-        fetch(url)
+
+        basicFetch(url, method, body)
         .then((res)=>{
             if(res.ok){
                 return res.json()

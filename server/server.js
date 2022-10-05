@@ -11,14 +11,15 @@ const {
     signup,
     signin,
     signout,
-    currentUser
+    currentUser,
+    updateUser
 } = require("./handlers/users");
 
 const {
     editFood,
     getFood,
     searchFoods
-} = require("./handlers/Foods");
+} = require("./handlers/foods");
 
 express()
     .use(morgan("tiny"))
@@ -35,6 +36,7 @@ express()
     .post("/signin", signin)
     .post("/signout", signout)
     .post("/signup", signup)
+    .patch("/updateUser", updateUser)
 
     //foods
     .post("/editFood", editFood)

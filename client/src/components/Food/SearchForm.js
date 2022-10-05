@@ -1,6 +1,5 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import useFetch from "../../hooks/useFetch";
-import FormInput from "./FormInput";
+import { useSearchParams } from "react-router-dom";
+import FormInput from "../forms/FormInput";
 
 const SearchForm = ()=>{
     const [query, setQuery] = useSearchParams()

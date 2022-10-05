@@ -83,22 +83,22 @@ const signout = async (req, res) => {
 }
 
 const currentUser = async (req, res) => {
-    const token = req.session.token;
-    if (!token) {
-        return res.status(200).json({status: 200, message: "no user currently signed in"})
-    }
-
-    const _id = jwt.verify(token, secret, (err, decoded) => {
-        if (err) {
-            return null;
-        }
-        return decoded.user;
-    });
+    const _id = userId(req);
     const user = await db.collection("users").findOne({_id})
     if(user)
         res.status(200).json({status: 200, data: user, message: "user retrieved"})
     else
         res.status(500).json({status: 500, message: "User is logged in but not found"})
+}
+
+const updateUser = async (req, res) => {
+    const _id = userId(req);
+    console.log(req.body)
+    const dbRes = await db.collection("users").updateOne({_id}, {
+        "$set": req.body
+    })
+    console.log(dbRes)
+    res.status(200).json({status:1})
 }
 
 const getUserProfile = async (req, res)=>{
@@ -122,12 +122,25 @@ const getUserProfile = async (req, res)=>{
     }
 }
 
+const userId = (req)=>{
+    const token = req.session.token;
+    if (!token) {
+        return res.status(200).json({status: 200, message: "no user currently signed in"})
+    }
 
+    return jwt.verify(token, secret, (err, decoded) => {
+        if (err) {
+            return null;
+        }
+        return decoded.user;
+    });
+}
 
 module.exports = {
     signup,
     signin,
     signout,
     currentUser,
-    getUserProfile
+    getUserProfile,
+    updateUser
 }

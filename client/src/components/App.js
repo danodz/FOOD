@@ -12,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Link to="/account">account</Link>}/>
         <Route path="/account" element={<Account/>}/>
+        <Route path="/account/:section" element={<Account/>}/>
         <Route path="/searchFoods" element={<Search/>}/>
         <Route path="/searchFoods/:page" element={<Search/>}/>
         <Route path="/food/:_id" element={<Food/>}/>

@@ -1,13 +1,16 @@
-import { useContext, useEffect } from "react";
-import {UserContext} from "../context/UserContext"
+import {useParams } from "react-router-dom";
 import Foods from "./Foods";
+import ProfileNav from "./ProfileNav";
+import EditUser from "./EditUser";
 
 const Profile = ()=>{
-    const {user} = useContext(UserContext)
+    const {section} = useParams()
     return (
         <>
-            {user&&user.name}
-            <Foods/>
+            <ProfileNav/>
+            {!section&&<EditUser/>}
+            {section==="foods"&&<Foods/>}
+            
         </>
     )
 }
