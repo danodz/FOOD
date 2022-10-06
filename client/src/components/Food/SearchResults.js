@@ -12,7 +12,6 @@ const SearchResults = ()=>{
         if(query.get(key))
             searchParams[key] = query.get(key);
     })
-    console.log(searchParams)
     const [foods, status] = useFetch("/searchFoods?"+new URLSearchParams(searchParams));
     return (
         <>

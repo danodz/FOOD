@@ -8,7 +8,6 @@ const basicFetch = (url, method, body)=>{
         options.method = method;
     if(body)
         options.body = body;
-    console.log(options)
 
     return fetch(url, options);
 }

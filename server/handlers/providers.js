@@ -2,15 +2,15 @@ const { v4: uuidv4 } = require("uuid");
 const {db} = require("../db")
 const {fallback} = require("../utils")
 
-// get foods by range defined by pages of 50 items 
+// get providers by range defined by pages of 50 items 
 // the page number is sent in the request 'page'
 const searchProviders = async (req, res)=>{
-    const page = parseInt(req.params.page)-1;
+    const page = parseInt(fallback(req.query.page, 1))-1;
     const itemsPerPage = parseInt(fallback(req.query.itemsPerPage, 50));
     const orderBy = fallback(req.query.orderBy, "name");
     const orderDir = parseInt(fallback(req.query.orderDir, 1));
 
-    if(page <= 0 || itemsPerPage >= 0){
+    if(page < 0 || itemsPerPage < 0){
         return res.status(400).json({
             message: "Invalid request",
         })
@@ -54,7 +54,7 @@ const searchProviders = async (req, res)=>{
 
     if(allProviders && allProviders[0] && allProviders[0].total && allProviders[0].total[0]) {
         res.status(200).json({
-            foods: allProviders[0].providers,
+            providers: allProviders[0].providers,
             nbPages: Math.ceil(allProviders[0].total[0].total/itemsPerPage)
         });
     } else {

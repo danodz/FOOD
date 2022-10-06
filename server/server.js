@@ -51,7 +51,7 @@ express()
 
     //providers
     .post("/editProvider", editProvider)
-    .get("/searchProviders/:page", searchProviders)
+    .get("/searchProviders", searchProviders)
     .get("/getProvider/:_id", getProvider)
 
     .get("*", (req, res) => {

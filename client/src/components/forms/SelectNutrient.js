@@ -1,6 +1,6 @@
 import nutrients from "../../data/nutrients.json"
 
-const SelectNutrient = (name, defaultValue)=>{
+const SelectNutrient = ({name, defaultValue})=>{
     return (
         <select defaultValue={defaultValue?defaultValue:"none"} name={name?name:""}>
             <option value="none">Pick a nutrient</option>

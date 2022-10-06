@@ -5,7 +5,7 @@ const SearchForm = ()=>{
     const [query, setQuery] = useSearchParams()
     const submit = (event)=>{
         event.preventDefault();
-        const el = event.target.elements;
+        const el = event.target;
         const formData = {
             name: el.name.value,
         };

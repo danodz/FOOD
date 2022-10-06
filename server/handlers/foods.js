@@ -72,13 +72,11 @@ const getFood = async (req, res)=>{
 
 const editFood = async (req, res)=>{
     try{
-    const food = req.body;
-    if(!food._id)
-    {
-        food._id = uuidv4();
+        const food = req.body;
+        if(!food._id)
+            food._id = uuidv4();
         const dbRes = await db.collection("foods").insertOne(food);
         res.status(200).json(dbRes)
-    }
     } catch(err){
         res.status(500).json({error: err})
         console.log(err)

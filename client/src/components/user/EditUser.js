@@ -1,12 +1,14 @@
 import styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {UserContext} from "../context/UserContext";
 import FormList from "../forms/FormList";
 import FormInput from "../forms/FormInput";
+import SelectNutrient from "../forms/SelectNutrient";
 import { basicFetch } from "../../utils";
 
 const EditUser = ()=>{
     const {user} = useContext(UserContext)
+    const [favNutrients, setFavNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
 
     const submitNutrients = (event)=>{
         event.preventDefault();
@@ -25,8 +27,8 @@ const EditUser = ()=>{
         <Wrapper>
             <form onSubmit={submitNutrients}>
                 <FormInput label="Name:" name="name" defaultValue={user.name}/>
-                <FormList name="favoriteNutrients" defaultValues={user.nutrients.map((nutrient)=>{return {nutrient:nutrient}})}>
-                    <FormInput name="nutrient"/>
+                <FormList name="favoriteNutrients" values={favNutrients} setValues={setFavNutrients}>
+                    <SelectNutrient name="nutrient"/>
                 </FormList>
                 <button type="submit">Submit</button>
             </form>
