@@ -27,7 +27,7 @@ const ChooseProvider = ({providers, setProviders})=>{
             <button type="button" onClick={search}>Search</button>
             <div>
                 {result&&result.providers.map((provider)=>{
-                    return <button key={provider._id} onClick={()=>addProvider(provider.name,provider._id)}>{provider.name}</button>
+                    return <button type="button" key={provider._id} onClick={()=>addProvider(provider.name,provider._id)}>{provider.name}</button>
                 })}
             </div>
         </div>

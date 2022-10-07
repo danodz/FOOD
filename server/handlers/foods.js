@@ -10,7 +10,7 @@ const searchFoods = async (req, res)=>{
     const orderBy = fallback(req.query.orderBy, "name");
     const orderDir = parseInt(fallback(req.query.orderDir, 1));
 
-    if(page < 0 || itemsPerPage < 0){
+    if(page < 0 || itemsPerPage <= 0){
         return res.status(400).json({
             message: "Invalid request",
         })
@@ -51,7 +51,7 @@ const searchFoods = async (req, res)=>{
                 ]
             }
         }]).toArray();
-
+    console.log(allFoods)
     if(allFoods && allFoods[0] && allFoods[0].total && allFoods[0].total[0]) {
         res.status(200).json({
             foods: allFoods[0].foods,
@@ -73,9 +73,16 @@ const getFood = async (req, res)=>{
 const editFood = async (req, res)=>{
     try{
         const food = req.body;
-        if(!food._id)
+        let dbRes = {};
+        if(food._id){
+            dbRes.original = await db.collection("foods").findOne({_id: food._id});
+            dbRes.save = await db.collection("foodsHistory").updateOne({_id:food._id}, {$push: {versions: dbRes.original}})
+            dbRes.new = await db.collection("foods").updateOne({_id:food._id},{$set:food});
+        } else {
             food._id = uuidv4();
-        const dbRes = await db.collection("foods").insertOne(food);
+            dbRes.new = await db.collection("foods").insertOne(food);
+            dbRes.history = await db.collection("foodsHistory").insertOne({_id:food._id, versions:[]});
+        }
         res.status(200).json(dbRes)
     } catch(err){
         res.status(500).json({error: err})

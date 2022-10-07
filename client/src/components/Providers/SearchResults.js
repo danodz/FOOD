@@ -12,15 +12,15 @@ const SearchResults = ()=>{
         if(query.get(key))
             searchParams[key] = query.get(key);
     })
-    const [foods, status] = useFetch("/searchProviders?"+new URLSearchParams(searchParams));
+    const [providers, status] = useFetch("/searchProviders?"+new URLSearchParams(searchParams));
     return (
         <>
         {status==="success"
             ?<>
-                {foods.foods.map((food)=>{
-                    return <div key={food._id}>{food.name}</div>;
+                {providers.providers.map((provider)=>{
+                    return <div key={provider._id}>{provider.name}</div>;
                 })}
-                <Pages nbPages={foods.nbPages} current={page}/>
+                <Pages nbPages={providers.nbPages} current={page}/>
             </>:status==="loading"?<CircularProgress/>
             :<>No data found</>
         }</>

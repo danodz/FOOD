@@ -4,16 +4,60 @@ import FormList from "../forms/FormList";
 import SelectNutrient from "../forms/SelectNutrient";
 import ChooseProvider from "../forms/ChooseProvider"
 import { v4 } from "uuid";
-import { basicFetch } from "../../utils";
-import { useContext, useState } from "react";
+import { basicFetch, objToArray } from "../../utils";
+import { useContext, useEffect, useState } from "react";
 import FormDisplay from "../forms/FormDisplay";
 import FormHidden from "../forms/FormHidden";
 import { UserContext } from "../context/UserContext";
+import { useSearchParams } from "react-router-dom";
 
 const EditFood = ()=>{
   const {user} = useContext(UserContext);
 
-  const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
+  const [query] = useSearchParams();
+  const [foodToEdit, setFoodToEdit] = useState(null);
+
+  const loadFood = async (_id)=>{
+      const res = await basicFetch("/getFood/"+_id);
+      const food = await res.json();
+      setFoodToEdit(food)
+      
+      if(food.nutrients){
+        setNutrients(Object.keys(food.nutrients).map((key)=>{
+            return {nutrient: key, value: food.nutrients[key]}
+        }));
+      }
+      if(food.measures)
+        setMeasures(Object.values(food.measures).map((measure)=>{
+          return {
+            factorName: measure.name,
+            factor: measure.factor
+          }
+        }))
+      if(food.providers){
+        const newProviders = [];
+        Object.values(food.providers).forEach((list)=>{
+          list.forEach((provider) => {
+            newProviders.push({
+              providerId: provider._id,
+              name: provider.name,
+              format: provider.format,
+              price: provider.price,
+              price100g: provider.price100g
+            })
+          });
+        });
+        setProviders(newProviders);
+      }
+  }
+
+  useEffect(()=>{
+    if(query.has("_id")){
+      loadFood(query.get("_id"))
+    }
+  },[])
+
+  const [nutrients, setNutrients] = useState([])//user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
   const [measures, setMeasures] = useState([]);
   const [providers, setProviders] = useState([]);
 
@@ -26,6 +70,8 @@ const EditFood = ()=>{
       measures: {},
       providers: {}
     }
+    if(foodToEdit)
+      food._id = foodToEdit._id;
     event.target.nutrients.querySelectorAll("fieldset").forEach((nutrient)=>{
       food.nutrients[nutrient.querySelector("select").value] = nutrient.querySelector("input").value;
     });
@@ -51,13 +97,14 @@ const EditFood = ()=>{
     
     const res = await basicFetch("/editFood", "POST",JSON.stringify(food))
     const response = await res.json()
+    console.log(response)
   }
 
   return (
     <Form onSubmit={submit}>
       <fieldset name="general">
-        <FormInput label="Name" name="name" />
-        <FormInput label="Description" name="description" />
+        <FormInput label="Name" name="name" defaultValue={foodToEdit&&foodToEdit.name}/>
+        <FormInput label="Description" name="description" defaultValue={foodToEdit&&foodToEdit.description}/>
       </fieldset>
 
       <FormList name="nutrients" values={nutrients} setValues={setNutrients}>

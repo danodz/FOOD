@@ -1,5 +1,5 @@
 import { CircularProgress } from "@mui/material"
-import { useParams, useSearchParams } from "react-router-dom"
+import { Link, useParams, useSearchParams } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import Pages from "./Pages"
 
@@ -18,7 +18,7 @@ const SearchResults = ()=>{
         {status==="success"
             ?<>
                 {foods.foods.map((food)=>{
-                    return <div key={food._id}>{food.name}</div>;
+                    return <div key={food._id}>{food.name}<Link to={"/foods?_id="+food._id}>Edit</Link></div>;
                 })}
                 <Pages nbPages={foods.nbPages} current={page}/>
             </>:status==="loading"?<CircularProgress/>

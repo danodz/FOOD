@@ -14,7 +14,7 @@ const SearchForm = ()=>{
     return (
         <>
             <form onSubmit={submit}>
-                <FormInput label="Name of the food contains" name="name" defaultValue={query.get("name")}/>
+                <FormInput label="Name of the provider contains" name="name" defaultValue={query.get("name")}/>
                 <button type="submit">Submit</button>
             </form>
         </>
