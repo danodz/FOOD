@@ -99,11 +99,9 @@ const updateUser = async (req, res) => {
     const _id = userId(req);
     if(!userId)
         res.status(200).json({status: 200, message: "no user currently signed in"})
-    console.log(req.body)
     const dbRes = await db.collection("users").updateOne({_id}, {
         "$set": req.body
     })
-    console.log(dbRes)
     res.status(200).json({status:1})
 }
 

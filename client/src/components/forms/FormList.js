@@ -4,11 +4,6 @@ import styled from "styled-components";
 import FormListItem from "./FormListItem";
 
 const FormList = ({name, children, values, setValues, noAdd})=>{
-    // useEffect(()=>{
-    //     setValues(values?values.map((value)=>{ return {...value, key:v4()}} )
-    //                 :[{key:v4()}]
-    //             );
-    // }, [])
     const addItem = ()=>{
         setValues([...values, {_id:v4()}])
     }

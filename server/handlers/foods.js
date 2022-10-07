@@ -51,7 +51,7 @@ const searchFoods = async (req, res)=>{
                 ]
             }
         }]).toArray();
-    console.log(allFoods)
+    
     if(allFoods && allFoods[0] && allFoods[0].total && allFoods[0].total[0]) {
         res.status(200).json({
             foods: allFoods[0].foods,

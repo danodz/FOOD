@@ -24,12 +24,18 @@ const EditFood = ()=>{
       
       if(food.nutrients){
         setNutrients(Object.keys(food.nutrients).map((key)=>{
-            return {nutrient: key, value: food.nutrients[key]}
+            return {
+              _id: key,
+              nutrient: key,
+              value: food.nutrients[key]
+            }
         }));
       }
       if(food.measures)
-        setMeasures(Object.values(food.measures).map((measure)=>{
+        setMeasures(Object.keys(food.measures).map((key)=>{
+          const measure = food.measures[key];
           return {
+            _id: key,
             factorName: measure.name,
             factor: measure.factor
           }
@@ -39,6 +45,7 @@ const EditFood = ()=>{
         Object.values(food.providers).forEach((list)=>{
           list.forEach((provider) => {
             newProviders.push({
+              _id: v4(),
               providerId: provider._id,
               name: provider.name,
               format: provider.format,
@@ -57,7 +64,7 @@ const EditFood = ()=>{
     }
   },[])
 
-  const [nutrients, setNutrients] = useState([])//user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
+  const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
   const [measures, setMeasures] = useState([]);
   const [providers, setProviders] = useState([]);
 
@@ -97,7 +104,6 @@ const EditFood = ()=>{
     
     const res = await basicFetch("/editFood", "POST",JSON.stringify(food))
     const response = await res.json()
-    console.log(response)
   }
 
   return (
