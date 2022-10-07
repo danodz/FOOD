@@ -1,6 +1,6 @@
-const { v4: uuidv4 } = require("uuid");
 const {db} = require("../db")
-const {fallback} = require("../utils")
+const {fallback, newFood} = require("../utils");
+const { userId } = require("./users");
 
 // get foods by range defined by pages of 50 items 
 // the page number is sent in the request 'page'
@@ -54,7 +54,7 @@ const searchFoods = async (req, res)=>{
     
     if(allFoods && allFoods[0] && allFoods[0].total && allFoods[0].total[0]) {
         res.status(200).json({
-            foods: allFoods[0].foods,
+            results: allFoods[0].foods,
             nbPages: Math.ceil(allFoods[0].total[0].total/itemsPerPage)
         });
     } else {
@@ -79,9 +79,8 @@ const editFood = async (req, res)=>{
             dbRes.save = await db.collection("foodsHistory").updateOne({_id:food._id}, {$push: {versions: dbRes.original}})
             dbRes.new = await db.collection("foods").updateOne({_id:food._id},{$set:food});
         } else {
-            food._id = uuidv4();
-            dbRes.new = await db.collection("foods").insertOne(food);
-            dbRes.history = await db.collection("foodsHistory").insertOne({_id:food._id, versions:[]});
+            const newRes = await newFood(food, userId(req));
+            dbRes = newRes.dbRes;
         }
         res.status(200).json(dbRes)
     } catch(err){

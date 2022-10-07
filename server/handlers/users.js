@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
-const {db} = require("../db")
+const {db} = require("../db");
+const { newFood } = require("../utils");
 
 require("dotenv").config();
 const {secret} = process.env;
@@ -88,7 +89,16 @@ const currentUser = async (req, res) => {
     const _id = userId(req);
     if(!userId)
         res.status(200).json({status: 200, message: "no user currently signed in"})
+    // $lookup against an expression value is not allowed in this atlas tier
     const user = await db.collection("users").findOne({_id})
+    const foods = await db.collection("foods").find({_id: {$in: user.foods}}).toArray()
+    user.foods = foods.map((food)=>{
+        return {
+            _id: food._id,
+            name: food.name
+        }
+    });
+    
     if(user)
         res.status(200).json({status: 200, data: user, message: "user retrieved"})
     else
@@ -105,27 +115,6 @@ const updateUser = async (req, res) => {
     res.status(200).json({status:1})
 }
 
-const getUserProfile = async (req, res)=>{
-    const _id = req.params.user
-    
-    const user = await callDb(async(db)=>{
-        return await db.collection("users").findOne({_id})
-    });
-
-    if(user) {
-        res.status(200).json({
-        status: 200,
-        message: "Data retrieved successfully",
-        data: user
-        });
-    } else {
-        res.status(400).json({
-        status: 400,
-        message: "Data not found",
-        });
-    }
-}
-
 const userId = (req)=>{
     const token = req.session.token;
     if (!token) {
@@ -140,11 +129,18 @@ const userId = (req)=>{
     });
 }
 
+const forkFood = async (req, res)=>{
+    const oldFood = await db.collection("foods").findOne({_id:req.params._id});
+    const food = await newFood(oldFood, userId(req));
+    res.status(200).json(food)
+}
+
 module.exports = {
     signup,
     signin,
     signout,
     currentUser,
-    getUserProfile,
-    updateUser
+    updateUser,
+    userId,
+    forkFood
 }

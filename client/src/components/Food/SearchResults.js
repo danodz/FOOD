@@ -1,26 +1,26 @@
-import { CircularProgress } from "@mui/material"
+import { adaptV4Theme, CircularProgress } from "@mui/material"
+import { cloneElement } from "react"
 import { Link, useParams, useSearchParams } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import Pages from "./Pages"
 
-const SearchResults = ()=>{
+const SearchResults = ({fields, url, children})=>{
     const [query] = useSearchParams()
     const page = query.get("page")
-    const searchParamKeys = ["name","page"];
     const searchParams = {};
-    searchParamKeys.forEach((key)=>{
-        if(query.get(key))
-            searchParams[key] = query.get(key);
+    [...fields, "page"].forEach((field)=>{
+        if(query.get(field))
+            searchParams[field] = query.get(field);
     })
-    const [foods, status] = useFetch("/searchFoods?"+new URLSearchParams(searchParams));
+    const [results, status] = useFetch(url+"?"+new URLSearchParams(searchParams));
     return (
         <>
         {status==="success"
             ?<>
-                {foods.foods.map((food)=>{
-                    return <div key={food._id}>{food.name}<Link to={"/foods?_id="+food._id}>Edit</Link></div>;
+                {results.results.map((result)=>{
+                    return cloneElement(children, {...result, key:result._id})
                 })}
-                <Pages nbPages={foods.nbPages} current={page}/>
+                <Pages nbPages={results.nbPages} current={page}/>
             </>:status==="loading"?<CircularProgress/>
             :<>No data found</>
         }</>
