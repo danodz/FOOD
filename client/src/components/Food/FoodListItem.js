@@ -3,18 +3,25 @@ import { UserContext } from "../context/UserContext";
 import { Link } from "react-router-dom";
 import { basicFetch } from "../../utils";
 
-const FoodListItem = ({_id, name})=>{
+const FoodListItem = ({food})=>{
     const {user, loadUser} = useContext(UserContext);
-    const owned = user.foods.some((food)=> food._id===_id)
-    const fork = async ()=>{
-        const res = await basicFetch("/forkFood/"+_id)
+    const owned = food.userId?food.userId===user._id:false
+    const forkFood = async ()=>{
+        const res = await basicFetch("/forkFood/"+food._id)
         const response = await res.json();
         loadUser();
         console.log(response)
     }
-    return <div key={_id}>{name}
-        {owned&&<Link to={"/foods?_id="+_id}>Edit</Link>}
-        {<button onClick={fork}>Fork</button>}
+    const deleteFood = async ()=>{
+        const res = await basicFetch("/deleteFood/"+food._id)
+        const response = await res.json();
+        loadUser();
+        console.log(response)
+    }
+    return <div key={food._id}>{food.name}
+        {owned&&<Link to={"/foods?_id="+food._id}>Edit</Link>}
+        {owned&&<button onClick={deleteFood}>Delete</button>}
+        <button onClick={forkFood}>Copy</button>
     </div>;
 }
 export default FoodListItem;

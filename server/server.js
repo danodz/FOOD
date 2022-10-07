@@ -13,7 +13,8 @@ const {
     signout,
     currentUser,
     updateUser,
-    forkFood
+    forkFood,
+    deleteFood
 } = require("./handlers/users");
 
 const {
@@ -45,6 +46,7 @@ express()
     .post("/signup", signup)
     .patch("/updateUser", updateUser)
     .get("/forkFood/:_id", forkFood)
+    .get("/deleteFood/:_id", deleteFood)
 
     //foods
     .post("/editFood", editFood)

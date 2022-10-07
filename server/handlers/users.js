@@ -91,13 +91,7 @@ const currentUser = async (req, res) => {
         res.status(200).json({status: 200, message: "no user currently signed in"})
     // $lookup against an expression value is not allowed in this atlas tier
     const user = await db.collection("users").findOne({_id})
-    const foods = await db.collection("foods").find({_id: {$in: user.foods}}).toArray()
-    user.foods = foods.map((food)=>{
-        return {
-            _id: food._id,
-            name: food.name
-        }
-    });
+    user.foods = await db.collection("foods").find({_id: {$in: user.foods}}).toArray()
     
     if(user)
         res.status(200).json({status: 200, data: user, message: "user retrieved"})
@@ -135,6 +129,11 @@ const forkFood = async (req, res)=>{
     res.status(200).json(food)
 }
 
+const deleteFood = async (req, res)=>{
+    const dbRes = await db.collection("foods").deleteOne({_id:req.params._id});
+    res.status(200).json(dbRes)
+}
+
 module.exports = {
     signup,
     signin,
@@ -142,5 +141,6 @@ module.exports = {
     currentUser,
     updateUser,
     userId,
-    forkFood
+    forkFood,
+    deleteFood
 }

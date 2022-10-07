@@ -8,7 +8,7 @@ const Profile = ()=>{
     return (<>
             <EditUser/>
             {user.foods.map((food)=>{
-                return <FoodListItem key={food._id} _id={food._id} name={food.name}/>
+                return <FoodListItem key={food._id} food={food}/>
             })}
     </>)
 }

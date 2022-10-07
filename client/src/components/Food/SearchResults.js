@@ -18,7 +18,7 @@ const SearchResults = ({fields, url, children})=>{
         {status==="success"
             ?<>
                 {results.results.map((result)=>{
-                    return cloneElement(children, {...result, key:result._id})
+                    return cloneElement(children, {food:result, key:result._id})
                 })}
                 <Pages nbPages={results.nbPages} current={page}/>
             </>:status==="loading"?<CircularProgress/>

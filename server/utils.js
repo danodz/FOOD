@@ -10,7 +10,7 @@ const fallback = (val, def) =>{
 
 const newFood = async (food, userId)=>{
     food._id = uuidv4();
-    console.log(food)
+    food.userId = userId
     const dbRes = {}
     dbRes.new = await db.collection("foods").insertOne(food);
     dbRes.history = await db.collection("foodsHistory").insertOne({_id:food._id, versions:[]});
