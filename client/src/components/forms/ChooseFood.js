@@ -16,16 +16,26 @@ const ChooseFood = ({foods, setFoods})=>{
         setResult(data);
     }
 
-    const addFood = (food) => {
+    const addFood = async (food) => {
         const _id = v4()
-        const ingredientProviders = food.providers.map((provider)=>{
-            return {
-                ...provider,
-                fullName: provider.name +": "+ provider.format
+        const res = await basicFetch("/getFood/"+food._id);
+        const ingredientsData = await res.json();
+        const ingredient = {
+            _id: _id,
+            foodId: food._id,
+            name: ingredientsData.name,
+            ingredientProviders: {
+                provider: food.provider,
+                providers: ingredientsData.providers.map((provider)=>{
+                    return {
+                        _id: provider._id,
+                        name: provider.format
+                    }
+                })
             }
-        })
-
-        setFoods([...foods, {name:food.name, foodId:food.foodId, _id, ingredientProviders}])
+        }
+        setFoods([...foods, ingredient])
+        //setFoods([...foods, {name:food.name, foodId:food.foodId, _id, ingredientProviders}])
     }
 
     return (

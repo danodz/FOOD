@@ -17,6 +17,8 @@ const FormList = ({name, children, values, setValues, noAdd})=>{
         <fieldset name={name}>
             {name}
             {values.map((value, i)=>{
+                if(!value._id)
+                    value._id = v4()
                 return <FormListItem key={value._id} removeFn={removeItem} index={i} defaultValue={values&&values[i]&&values[i]}>
                     <FormHidden name="_id" value={value._id}/>
                     {children}

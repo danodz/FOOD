@@ -47,29 +47,46 @@ const EditFood = ()=>{
           }
       }))}
       if(food.providers){
-        setProviders(food.providers.map((provider)=>{
+        const providersData = {};
+        setProviders(await Promise.all(food.providers.map(async (provider)=>{
+          if(!providersData.providerId){
+            const res = await basicFetch("/getProvider/"+provider.providerId);
+            providersData[provider.providerId] = await res.json();
+          }
           return {
             _id: provider._id,
             providerId: provider.providerId,
-            name: provider.name,
+            name: providersData[provider.providerId].name,
             format: provider.format,
             price: provider.price,
             price100g: provider.price100g
           }
-        }));
+        })));
       }
       if(food.ingredients){
-        setIngredients(food.ingredients.map((ingredient)=>{
+        const ingredientsData = {};
+        setIngredients(await Promise.all(food.ingredients.map(async (ingredient)=>{
+          if(!ingredientsData.foodId){
+            const res = await basicFetch("/getFood/"+ingredient.foodId);
+            ingredientsData[ingredient.foodId] = await res.json();
+          }
           return {
             _id: ingredient._id,
             foodId: ingredient.foodId,
             amount: ingredient.amount,
-            name: ingredient.name,
-            ingredientProviders: ingredient.ingredientProviders
+            name: ingredientsData[ingredient.foodId].name,
+            ingredientProviders: {
+              provider: ingredient.provider,
+              providers: ingredientsData[ingredient.foodId].providers.map((provider)=>{
+                    return {
+                        _id: provider._id,
+                        name: provider.format
+                    }
+                })
+            }
           }
-      }))}
+      })))}
   }
-
   useEffect(()=>{
     if(query.has("_id")){
       loadFood(query.get("_id"))
@@ -89,7 +106,7 @@ const EditFood = ()=>{
     if(foodToEdit)
       food._id = foodToEdit._id;
     event.target.nutrients.querySelectorAll("fieldset").forEach((nutrient)=>{
-      food.nutrients[nutrient.querySelector("select").value] = nutrient.querySelector("input").value;
+      food.nutrients[nutrient.querySelector("select").value] = nutrient.querySelector("input[name='value']").value;
     });
     event.target.measures.querySelectorAll("fieldset").forEach((measure)=>{
       food.measures.push( {
@@ -101,7 +118,6 @@ const EditFood = ()=>{
     event.target.providers.querySelectorAll("fieldset").forEach((provider)=>{
       food.providers.push({
         _id: provider.querySelector("input[name='_id']").value,
-        name: provider.querySelector("input[name='name']").value,
         providerId: provider.querySelector("input[name='providerId']").value,
         format: provider.querySelector("input[name='format']").value,
         price: provider.querySelector("input[name='price']").value,
@@ -112,7 +128,8 @@ const EditFood = ()=>{
     event.target.ingredients.querySelectorAll("fieldset").forEach((ingredient)=>{
       food.ingredients.push({
         _id: ingredient.querySelector("input[name='_id']").value,
-        name: ingredient.querySelector("input[name='name']").value,
+        foodId: ingredient.querySelector("input[name='foodId']").value,
+        provider: ingredient.querySelector("select[name='ingredientProviders']").value,
         amount: ingredient.querySelector("input[name='amount']").value,
       });
     });
@@ -121,6 +138,7 @@ const EditFood = ()=>{
     const response = await res.json()
     console.log(response)
   }
+  
   return (
     <Form onSubmit={submit}>
       <fieldset name="general">

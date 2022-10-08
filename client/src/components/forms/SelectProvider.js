@@ -1,10 +1,10 @@
 const SelectProvider = ({name, defaultValue})=>{
+    const {provider, providers} = defaultValue;
     return (
-        <>{defaultValue&&<select name={name?name:""}>
+        <>{<select defaultValue={provider} name={name?name:""}>
             <option value="none">Pick a provider</option>
-            {defaultValue.map((provider)=>{
-                console.log(provider)
-                return <option key={provider._id} value={provider._id}>{provider.fullName}</option>
+            {providers.map((provider)=>{
+                return <option key={provider._id} value={provider._id}>{provider.name}</option>
             })}
         </select>}</>
     )

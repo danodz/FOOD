@@ -22,6 +22,7 @@ const FoodListItem = ({food})=>{
         {owned&&<Link to={"/foods?_id="+food._id}>Edit</Link>}
         {owned&&<button onClick={deleteFood}>Delete</button>}
         <button onClick={forkFood}>Copy</button>
+        <Link to={"/food/"+food._id}>Details</Link>
     </div>;
 }
 export default FoodListItem;
