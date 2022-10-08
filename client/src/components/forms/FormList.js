@@ -2,6 +2,7 @@ import { cloneElement, useEffect, useState } from "react";
 import { v4 } from "uuid";
 import styled from "styled-components";
 import FormListItem from "./FormListItem";
+import FormHidden from "./FormHidden";
 
 const FormList = ({name, children, values, setValues, noAdd})=>{
     const addItem = ()=>{
@@ -17,6 +18,7 @@ const FormList = ({name, children, values, setValues, noAdd})=>{
             {name}
             {values.map((value, i)=>{
                 return <FormListItem key={value._id} removeFn={removeItem} index={i} defaultValue={values&&values[i]&&values[i]}>
+                    <FormHidden name="_id" value={value._id}/>
                     {children}
                 </FormListItem>
             })}

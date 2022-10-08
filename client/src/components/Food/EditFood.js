@@ -10,12 +10,19 @@ import FormDisplay from "../forms/FormDisplay";
 import FormHidden from "../forms/FormHidden";
 import { UserContext } from "../context/UserContext";
 import { useSearchParams } from "react-router-dom";
+import ChooseFood from "../forms/ChooseFood";
+import SelectProvider from "../forms/SelectProvider";
 
 const EditFood = ()=>{
   const {user} = useContext(UserContext);
 
   const [query] = useSearchParams();
   const [foodToEdit, setFoodToEdit] = useState(null);
+
+  const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
+  const [measures, setMeasures] = useState([]);
+  const [providers, setProviders] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
 
   const loadFood = async (_id)=>{
       const res = await basicFetch("/getFood/"+_id);
@@ -31,31 +38,36 @@ const EditFood = ()=>{
             }
         }));
       }
-      if(food.measures)
-        setMeasures(Object.keys(food.measures).map((key)=>{
-          const measure = food.measures[key];
+      if(food.measures){
+        setMeasures(food.measures.map((measure)=>{
           return {
-            _id: key,
+            _id: measure._id,
             factorName: measure.name,
             factor: measure.factor
           }
-        }))
+      }))}
       if(food.providers){
-        const newProviders = [];
-        Object.values(food.providers).forEach((list)=>{
-          list.forEach((provider) => {
-            newProviders.push({
-              _id: v4(),
-              providerId: provider._id,
-              name: provider.name,
-              format: provider.format,
-              price: provider.price,
-              price100g: provider.price100g
-            })
-          });
-        });
-        setProviders(newProviders);
+        setProviders(food.providers.map((provider)=>{
+          return {
+            _id: provider._id,
+            providerId: provider.providerId,
+            name: provider.name,
+            format: provider.format,
+            price: provider.price,
+            price100g: provider.price100g
+          }
+        }));
       }
+      if(food.ingredients){
+        setIngredients(food.ingredients.map((ingredient)=>{
+          return {
+            _id: ingredient._id,
+            foodId: ingredient.foodId,
+            amount: ingredient.amount,
+            name: ingredient.name,
+            ingredientProviders: ingredient.ingredientProviders
+          }
+      }))}
   }
 
   useEffect(()=>{
@@ -64,18 +76,15 @@ const EditFood = ()=>{
     }
   },[])
 
-  const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
-  const [measures, setMeasures] = useState([]);
-  const [providers, setProviders] = useState([]);
-
   const submit = async (event) => {
     event.preventDefault();
     const food = {
       name: event.target.general.querySelector("input[name='name']").value,
       description: event.target.general.querySelector("input[name='description']").value,
       nutrients: {},
-      measures: {},
-      providers: {}
+      measures: [],
+      providers: [],
+      ingredients: []
     }
     if(foodToEdit)
       food._id = foodToEdit._id;
@@ -83,29 +92,35 @@ const EditFood = ()=>{
       food.nutrients[nutrient.querySelector("select").value] = nutrient.querySelector("input").value;
     });
     event.target.measures.querySelectorAll("fieldset").forEach((measure)=>{
-      const _id = v4();
-      food.measures[_id] = {
+      food.measures.push( {
+        _id: measure.querySelector("input[name='_id']").value,
         name: measure.querySelector("input[name='factorName']").value,
         factor: measure.querySelector("input[name='factor']").value
-      }
+      })
     });
     event.target.providers.querySelectorAll("fieldset").forEach((provider)=>{
-      const providerData = {
+      food.providers.push({
+        _id: provider.querySelector("input[name='_id']").value,
         name: provider.querySelector("input[name='name']").value,
-        _id: provider.querySelector("input[name='providerId']").value,
+        providerId: provider.querySelector("input[name='providerId']").value,
         format: provider.querySelector("input[name='format']").value,
         price: provider.querySelector("input[name='price']").value,
         price100g: provider.querySelector("input[name='price100g']").value
-      }
-      if(!food.providers[providerData._id])
-        food.providers[providerData._id] = []
-      food.providers[providerData._id].push(providerData);
+      });
+      
+    });
+    event.target.ingredients.querySelectorAll("fieldset").forEach((ingredient)=>{
+      food.ingredients.push({
+        _id: ingredient.querySelector("input[name='_id']").value,
+        name: ingredient.querySelector("input[name='name']").value,
+        amount: ingredient.querySelector("input[name='amount']").value,
+      });
     });
     
     const res = await basicFetch("/editFood", "POST",JSON.stringify(food))
     const response = await res.json()
+    console.log(response)
   }
-
   return (
     <Form onSubmit={submit}>
       <fieldset name="general">
@@ -130,6 +145,14 @@ const EditFood = ()=>{
         <FormInput label="Buying format" name="format"/>
         <FormInput label="Price" name="price"/>
         <FormInput label="Price per 100g" name="price100g"/>
+      </FormList>
+
+      <ChooseFood foods={ingredients} setFoods={setIngredients}/>
+      <FormList name="ingredients" values={ingredients} setValues={setIngredients} noAdd={true}>
+        <FormDisplay label="name" name="name"/>
+        <FormHidden label="id" name="foodId"/>
+        <FormInput label="Amount" name="amount"/>
+        <SelectProvider name="ingredientProviders"/>
       </FormList>
 
       <button type="submit">Submit</button>
