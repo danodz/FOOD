@@ -18,4 +18,7 @@ const DisplayNutrient = ({id, value})=>{
 }
 export default DisplayNutrient;
 const Wrapper = styled.div`
+    border: 1px solid black;
+    margin-right: 25px;
+    padding: 10px;
 `

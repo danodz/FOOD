@@ -9,7 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import FormDisplay from "../forms/FormDisplay";
 import FormHidden from "../forms/FormHidden";
 import { UserContext } from "../context/UserContext";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ChooseFood from "../forms/ChooseFood";
 import SelectProvider from "../forms/SelectProvider";
 
@@ -142,6 +142,7 @@ const EditFood = ()=>{
   return (
     <Form onSubmit={submit}>
       <fieldset name="general">
+        {foodToEdit&&<Link to={"/food/"+foodToEdit._id}>Display</Link>}
         <FormInput label="Name" name="name" defaultValue={foodToEdit&&foodToEdit.name}/>
         <FormInput label="Description" name="description" defaultValue={foodToEdit&&foodToEdit.description}/>
       </fieldset>

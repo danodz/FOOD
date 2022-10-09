@@ -66,8 +66,44 @@ const searchFoods = async (req, res)=>{
 
 const getFood = async (req, res)=>{
     const _id = req.params._id;
-    const dbRes = await db.collection("foods").findOne({_id});
-    res.status(200).json(dbRes)
+    const food = await db.collection("foods").findOne({_id});
+    food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
+    food.ingredientsCostTotal = await getIngredientsCost(food)
+    res.status(200).json(food)
+}
+
+const getIngredientsCost = async(food)=>{
+    let total = 0;
+    await Promise.all(food.ingredients.map(async (ingredient)=>{
+        const food = await db.collection("foods").findOne({_id:ingredient.foodId});
+        const provider = food.providers.find((provider)=>{
+            return provider._id === ingredient.provider
+        });
+        if(provider){
+            total += (provider.price100g)/100 * ingredient.amount;
+        }
+    }));
+    return total;
+}
+
+const getIngredientsNutrition = async(food)=>{
+    let allNutrients = {};
+    const recurse = async (food)=>{
+        await Promise.all(food.ingredients.map(async (ingredient)=>{
+            const food = await db.collection("foods").findOne({_id:ingredient.foodId});
+            Object.keys(food.nutrients).forEach((id)=>{
+                const nutrient = food.nutrients[id];
+                if(allNutrients[id]){
+                    allNutrients[id] += (nutrient/100)*ingredient.amount;
+                } else {
+                    allNutrients[id] = (nutrient/100)*ingredient.amount;
+                }
+            })
+            await recurse(food);
+        }));
+    }
+    await recurse(food);
+    return allNutrients;
 }
 
 const editFood = async (req, res)=>{
