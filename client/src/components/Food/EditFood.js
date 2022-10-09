@@ -164,6 +164,7 @@ const EditFood = ()=>{
     }
   }
   return ( <>
+    Upload Image
     <ImageUpload images={images} onChange={onImageChange} maxNumber={1}/>
 
     <Form onSubmit={submit}>

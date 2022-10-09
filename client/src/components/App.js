@@ -1,4 +1,5 @@
 import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Compare from "./Food/Compare";
 import Food from "./Food/Food";
 import SearchFoods from "./Food/SearchFoods";
 import Navigation from "./Navigation";
@@ -22,6 +23,7 @@ function App() {
         <Route path="/searchFoods" element={<SearchFoods/>}/>
         <Route path="/searchProviders" element={<SearchProviders/>}/>
         <Route path="/food/:_id" element={<Food/>}/>
+        <Route path="/compare" element={<Compare/>}/>
       </Routes>
     </Router>
   );
