@@ -16,10 +16,11 @@ import SelectProvider from "../forms/SelectProvider";
 const EditFood = ()=>{
   const {user} = useContext(UserContext);
 
-  const [query] = useSearchParams();
+  const [query, setQuery] = useSearchParams();
   const [foodToEdit, setFoodToEdit] = useState(null);
 
   const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
+  const [tags, setTags] = useState([]);
   const [measures, setMeasures] = useState([]);
   const [providers, setProviders] = useState([]);
   const [ingredients, setIngredients] = useState([]);
@@ -37,6 +38,9 @@ const EditFood = ()=>{
               value: food.nutrients[key]
             }
         }));
+      }
+      if(food.tags){
+        setTags(food.tags);
       }
       if(food.measures){
         setMeasures(food.measures.map((measure)=>{
@@ -99,6 +103,7 @@ const EditFood = ()=>{
       name: event.target.general.querySelector("input[name='name']").value,
       description: event.target.general.querySelector("input[name='description']").value,
       nutrients: {},
+      tags: [],
       measures: [],
       providers: [],
       ingredients: []
@@ -107,6 +112,12 @@ const EditFood = ()=>{
       food._id = foodToEdit._id;
     event.target.nutrients.querySelectorAll("fieldset").forEach((nutrient)=>{
       food.nutrients[nutrient.querySelector("select").value] = nutrient.querySelector("input[name='value']").value;
+    });
+    event.target.tags.querySelectorAll("fieldset").forEach((tag)=>{
+      food.tags.push( {
+        _id: tag.querySelector("input[name='_id']").value,
+        tag: tag.querySelector("input[name='tag']").value,
+      })
     });
     event.target.measures.querySelectorAll("fieldset").forEach((measure)=>{
       food.measures.push( {
@@ -137,6 +148,11 @@ const EditFood = ()=>{
     const res = await basicFetch("/editFood", "POST",JSON.stringify(food))
     const response = await res.json()
     console.log(response)
+    if(!foodToEdit){
+      query.set("_id", response.new.insertedId)
+      loadFood(response.new.insertedId)
+      setQuery(query)
+    }
   }
   
   return (
@@ -146,6 +162,10 @@ const EditFood = ()=>{
         <FormInput label="Name" name="name" defaultValue={foodToEdit&&foodToEdit.name}/>
         <FormInput label="Description" name="description" defaultValue={foodToEdit&&foodToEdit.description}/>
       </fieldset>
+
+      <FormList name="tags" values={tags} setValues={setTags}>
+        <FormInput label="Tag" name="tag"/>
+      </FormList>
 
       <FormList name="nutrients" values={nutrients} setValues={setNutrients}>
           <SelectNutrient name="nutrient"/>
