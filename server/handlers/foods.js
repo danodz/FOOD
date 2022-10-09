@@ -31,20 +31,25 @@ const searchFoods = async (req, res)=>{
         }
     });
 
-    const nutrient = JSON.parse(req.query.nutrients)[0]
-    const nutrientMatches = req.query.nutrients? JSON.parse(req.query.nutrients).map((nutrient)=>{
-        const key = "nutrients."+nutrient.id
-        const match = {}
-        match[key] = {"$gte": parseInt(nutrient.minimum), "$lte": parseInt(nutrient.maximum)}
-        return match;
-    }) :[];
+    let nutrientMatches = null;
+    if(req.query.nutrients){
+        nutrientMatches = JSON.parse(req.query.nutrients).map((nutrient)=>{
+            const key = "nutrients."+nutrient.id
+            const match = {}
+            match[key] = {"$gte": nutrient.minimum, "$lte": nutrient.maximum}
+            return match;
+        });
+    }
+    console.log(nutrientMatches)
 
     //filter by search terms - sort - skip - limit
     const allFoods = await db.collection("foods").aggregate([
         {
-            '$match': filters,
-            "$match": req.query.tags?{"tags.tag": {$all: JSON.parse(req.query.tags)}}:{},
-            "$match": {$and:nutrientMatches}
+            '$match': {$and:[
+                filters,
+                req.query.tags?{"tags.tag": {$all: JSON.parse(req.query.tags)}}:{},
+                nutrientMatches?{$and:nutrientMatches}:{}
+            ]}
         },
         {
             "$facet": {
@@ -78,40 +83,49 @@ const searchFoods = async (req, res)=>{
 const getFood = async (req, res)=>{
     const _id = req.params._id;
     const food = await db.collection("foods").findOne({_id});
-    food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
-    food.ingredientsCostTotal = await getIngredientsCost(food)
+    if(food){
+        food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
+        food.ingredientsCostTotal = await getIngredientsCost(food)
+    }
     res.status(200).json(food)
 }
 
 const getIngredientsCost = async(food)=>{
     let total = 0;
-    await Promise.all(food.ingredients.map(async (ingredient)=>{
-        const food = await db.collection("foods").findOne({_id:ingredient.foodId});
-        const provider = food.providers.find((provider)=>{
-            return provider._id === ingredient.provider
-        });
-        if(provider){
-            total += (provider.price100g)/100 * ingredient.amount;
-        }
-    }));
+    if(food.ingredients){
+        await Promise.all(food.ingredients.map(async (ingredient)=>{
+            const food = await db.collection("foods").findOne({_id:ingredient.foodId});
+            if(food){
+                const provider = food.providers.find((provider)=>{
+                    return provider._id === ingredient.provider
+                });
+                if(provider){
+                    total += (provider.price100g)/100 * ingredient.amount;
+                }
+            }
+        }));
+    }
     return total;
 }
 
 const getIngredientsNutrition = async(food)=>{
     let allNutrients = {};
     const recurse = async (food)=>{
-        await Promise.all(food.ingredients.map(async (ingredient)=>{
-            const food = await db.collection("foods").findOne({_id:ingredient.foodId});
-            Object.keys(food.nutrients).forEach((id)=>{
-                const nutrient = food.nutrients[id];
-                if(allNutrients[id]){
-                    allNutrients[id] += (nutrient/100)*ingredient.amount;
-                } else {
-                    allNutrients[id] = (nutrient/100)*ingredient.amount;
-                }
-            })
-            await recurse(food);
-        }));
+        if(food&&food.ingredients){
+            await Promise.all(food.ingredients.map(async (ingredient)=>{
+                const food = await db.collection("foods").findOne({_id:ingredient.foodId});
+                if(food&&food.nutrients)
+                    Object.keys(food.nutrients).forEach((id)=>{
+                        const nutrient = food.nutrients[id];
+                        if(allNutrients[id]){
+                            allNutrients[id] += (nutrient/100)*ingredient.amount;
+                        } else {
+                            allNutrients[id] = (nutrient/100)*ingredient.amount;
+                        }
+                    })
+                await recurse(food);
+            }));
+        }
     }
     await recurse(food);
     return allNutrients;

@@ -12,41 +12,45 @@ const DisplayFood = ({food})=>{
 
     const allNutrients = {}
 
-    Object.keys(food.ingredientsNutritionTotal).forEach((nutrient)=>{
-        if(allNutrients[nutrient]){
-            allNutrients[nutrient] += parseFloat(food.ingredientsNutritionTotal[nutrient]);
-        } else{
-            allNutrients[nutrient] = parseFloat(food.ingredientsNutritionTotal[nutrient]);
-        }
-    });
-    Object.keys(food.nutrients).forEach((nutrient)=>{
-        if(allNutrients[nutrient]){
-            allNutrients[nutrient] += parseFloat(food.nutrients[nutrient]);
-        } else{
-            allNutrients[nutrient] = parseFloat(food.nutrients[nutrient]);
-        }
-    });
-    console.log(allNutrients)
+    if(food.ingredientsNutritionTotal)
+        Object.keys(food.ingredientsNutritionTotal).forEach((nutrient)=>{
+            if(allNutrients[nutrient]){
+                allNutrients[nutrient] += parseFloat(food.ingredientsNutritionTotal[nutrient]);
+            } else{
+                allNutrients[nutrient] = parseFloat(food.ingredientsNutritionTotal[nutrient]);
+            }
+        });
+    if(food.nutrients)
+        Object.keys(food.nutrients).forEach((nutrient)=>{
+            if(allNutrients[nutrient]){
+                allNutrients[nutrient] += parseFloat(food.nutrients[nutrient]);
+            } else{
+                allNutrients[nutrient] = parseFloat(food.nutrients[nutrient]);
+            }
+        });
 
     useEffect(()=>{
-        Promise.all(food.ingredients.map(async (ingredient)=>{
-            const res = await basicFetch("/getFood/"+ingredient.foodId);
-            return await res.json();
-        })).then(setIngredients);
+        if(food.ingredients)
+            Promise.all(food.ingredients.map(async (ingredient)=>{
+                const res = await basicFetch("/getFood/"+ingredient.foodId);
+                return await res.json();
+            })).then(setIngredients);
 
-        const mainProviders = {};
-        Promise.all(food.providers.map(async (provider)=>{
-            if(!mainProviders[provider.providerId]){
-                const res = await basicFetch("/getProvider/"+provider.providerId);
-                mainProviders[provider.providerId] = await res.json();
-            }
-            return {
-                ...provider,
-                name: mainProviders[provider.providerId].name
-            }
-        })).then(setProviders);
+        if(food.providers){
+            const mainProviders = {};
+            Promise.all(food.providers.map(async (provider)=>{
+                if(!mainProviders[provider.providerId]){
+                    const res = await basicFetch("/getProvider/"+provider.providerId);
+                    mainProviders[provider.providerId] = await res.json();
+                }
+                return {
+                    ...provider,
+                    name: mainProviders[provider.providerId].name
+                }
+            })).then(setProviders);
+        }
     },[])
-    
+    console.log(ingredients)
     return (
         <Wrapper>
             <General>
@@ -58,15 +62,15 @@ const DisplayFood = ({food})=>{
                     <div>Ingredients cost : {food.ingredientsCostTotal}</div>
                 </div>
             </General>
-            <Tags>
+            {food.tags&&<Tags>
                 <h1>Tags</h1>
                 <div className="section">
                     {food.tags.map((tag)=>{
                         return <div key={tag._id}>{tag.tag}</div>
                     })}
                 </div>
-            </Tags>
-            <Nutrients>
+            </Tags>}
+            {food.nutrients&&<Nutrients>
                 <h1>Nutrients</h1>
                 <div className="section">
                     {Object.keys(allNutrients).map((id)=>{
@@ -85,31 +89,31 @@ const DisplayFood = ({food})=>{
                         return <DisplayNutrient key={id} id={id} value={food.ingredientsNutritionTotal[id]}/>
                     })}
                 </div>
-            </Nutrients>
-            <Ingredients>
+            </Nutrients>}
+            {ingredients&&<Ingredients>
                 <h1>Ingredients</h1>
                 <div className="section">
                     {ingredients.map((ingredient)=>{
-                        return <FoodListItem key={ingredient._id} food={ingredient}/>
+                        return <>{ingredient&&<FoodListItem key={ingredient._id} food={ingredient}/>}</>
                     })}
                 </div>
-            </Ingredients>
-            <Measures>
+            </Ingredients>}
+            {food.measures&&<Measures>
                 <h1>Measures</h1>
                 <div className="section">
                 {food.measures.map((measure)=>{
                     return <div key={measure._id}>{measure.name}</div>
                 })}
                 </div>
-            </Measures>
-            <Providers>
+            </Measures>}
+            {providers&&<Providers>
                 <h1>Providers</h1>
                 <div className="section">
                     {providers.map((provider)=>{
                         return <div key={provider._id}>{provider.name + ": " + provider.format}</div>
                     })}
                 </div>
-            </Providers>
+            </Providers>}
         </Wrapper>
     )
 }
