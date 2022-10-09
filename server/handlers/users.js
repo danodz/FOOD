@@ -87,9 +87,10 @@ const signout = async (req, res) => {
 
 const currentUser = async (req, res) => {
     const _id = userId(req);
-    if(!userId)
-        res.status(200).json({status: 200, message: "no user currently signed in"})
+    if(!_id)
+        return res.status(200).json({status: 200, message: "no user currently signed in"})
     // $lookup against an expression value is not allowed in this atlas tier
+    console.log(_id)
     const user = await db.collection("users").findOne({_id})
     user.foods = await db.collection("foods").find({_id: {$in: user.foods}}).toArray()
     
