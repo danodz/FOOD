@@ -50,7 +50,7 @@ const DisplayFood = ({food})=>{
             })).then(setProviders);
         }
     },[])
-    console.log(ingredients)
+
     return (
         <Wrapper>
             <General>
@@ -60,6 +60,7 @@ const DisplayFood = ({food})=>{
                     <div>Description:{food.description}</div>
                     <Link to={"/foods?_id="+food._id}>Edit</Link>
                     <div>Ingredients cost : {food.ingredientsCostTotal}</div>
+                    {food.img&&<img src={food.img}/>}
                 </div>
             </General>
             {food.tags&&<Tags>

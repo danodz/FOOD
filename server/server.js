@@ -20,7 +20,8 @@ const {
 const {
     editFood,
     getFood,
-    searchFoods
+    searchFoods,
+    getHistory
 } = require("./handlers/foods");
 
 const {
@@ -52,6 +53,7 @@ express()
     .post("/editFood", editFood)
     .get("/searchFoods", searchFoods)
     .get("/getFood/:_id", getFood)
+    .get("/getHistory/:_id", getHistory)
 
     //providers
     .post("/editProvider", editProvider)

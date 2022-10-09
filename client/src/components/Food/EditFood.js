@@ -3,7 +3,6 @@ import FormInput from "../forms/FormInput";
 import FormList from "../forms/FormList";
 import SelectNutrient from "../forms/SelectNutrient";
 import ChooseProvider from "../forms/ChooseProvider"
-import { v4 } from "uuid";
 import { basicFetch, objToArray } from "../../utils";
 import { useContext, useEffect, useState } from "react";
 import FormDisplay from "../forms/FormDisplay";
@@ -12,6 +11,7 @@ import { UserContext } from "../context/UserContext";
 import { Link, useSearchParams } from "react-router-dom";
 import ChooseFood from "../forms/ChooseFood";
 import SelectProvider from "../forms/SelectProvider";
+import ImageUpload from "../ImageUpload";
 
 const EditFood = ()=>{
   const {user} = useContext(UserContext);
@@ -25,11 +25,19 @@ const EditFood = ()=>{
   const [providers, setProviders] = useState([]);
   const [ingredients, setIngredients] = useState([]);
 
+  const [images, setImages] = useState([]);
+  const onImageChange = (imageList) => {
+    setImages(imageList);
+  };
+
   const loadFood = async (_id)=>{
       const res = await basicFetch("/getFood/"+_id);
       const food = await res.json();
       setFoodToEdit(food)
       
+      if(food.img){
+        setImages([{data_url:food.img}])
+      }
       if(food.nutrients){
         setNutrients(Object.keys(food.nutrients).map((key)=>{
             return {
@@ -102,6 +110,7 @@ const EditFood = ()=>{
     const food = {
       name: event.target.general.querySelector("input[name='name']").value,
       description: event.target.general.querySelector("input[name='description']").value,
+      img: images[0].data_url,
       nutrients: {},
       tags: [],
       measures: [],
@@ -154,8 +163,9 @@ const EditFood = ()=>{
       setQuery(query)
     }
   }
-  
-  return (
+  return ( <>
+    <ImageUpload images={images} onChange={onImageChange} maxNumber={1}/>
+
     <Form onSubmit={submit}>
       <fieldset name="general">
         {foodToEdit&&<Link to={"/food/"+foodToEdit._id}>Display</Link>}
@@ -195,7 +205,7 @@ const EditFood = ()=>{
       </FormList>
 
       <button type="submit">Submit</button>
-    </Form>
+    </Form></>
   )
 }
 export default EditFood;

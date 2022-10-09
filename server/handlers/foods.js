@@ -150,8 +150,19 @@ const editFood = async (req, res)=>{
     }
 }
 
+const getHistory = async (req, res)=>{
+    const _id = req.params._id;
+    const dbRes = await db.collection("foodsHistory").findOne({_id})
+    await Promise.all(dbRes.versions.map(async (food)=>{
+        food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
+        food.ingredientsCostTotal = await getIngredientsCost(food)
+    }))
+    res.status(200).json(dbRes)
+}
+
 module.exports = {
     editFood,
     getFood,
-    searchFoods
+    searchFoods,
+    getHistory
 }
