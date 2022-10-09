@@ -5,7 +5,9 @@ import { basicFetch } from "../../utils";
 
 const FoodListItem = ({food})=>{
     const {user, loadUser} = useContext(UserContext);
-    const owned = food.userId?food.userId===user._id:false
+    let owned = false;
+    if(user)
+        owned = food.userId?food.userId===user._id:false
     const forkFood = async ()=>{
         const res = await basicFetch("/forkFood/"+food._id)
         const response = await res.json();

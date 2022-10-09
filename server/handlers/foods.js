@@ -31,11 +31,22 @@ const searchFoods = async (req, res)=>{
         }
     });
 
+    const nutrient = JSON.parse(req.query.nutrients)[0]
+    const nutrientMatches = req.query.nutrients? JSON.parse(req.query.nutrients).map((nutrient)=>{
+        const key = "nutrients."+nutrient.id
+        const match = {}
+        match[key] = {"$gte": parseInt(nutrient.minimum), "$lte": parseInt(nutrient.maximum)}
+        return match;
+    }) :[];
+
     //filter by search terms - sort - skip - limit
     const allFoods = await db.collection("foods").aggregate([
         {
             '$match': filters,
-        }, {
+            "$match": req.query.tags?{"tags.tag": {$all: JSON.parse(req.query.tags)}}:{},
+            "$match": {$and:nutrientMatches}
+        },
+        {
             "$facet": {
                 total:  [{ $count: "total" }],
                 foods: [

@@ -58,6 +58,14 @@ const DisplayFood = ({food})=>{
                     <div>Ingredients cost : {food.ingredientsCostTotal}</div>
                 </div>
             </General>
+            <Tags>
+                <h1>Tags</h1>
+                <div className="section">
+                    {food.tags.map((tag)=>{
+                        return <div key={tag._id}>{tag.tag}</div>
+                    })}
+                </div>
+            </Tags>
             <Nutrients>
                 <h1>Nutrients</h1>
                 <div className="section">
@@ -123,4 +131,6 @@ const Ingredients = styled.div`
 const Measures = styled.div`
 `
 const Providers = styled.div`
+`
+const Tags = styled.div`
 `
