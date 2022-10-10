@@ -6,7 +6,7 @@ const SearchFoods = ()=>{
     return (
         <>
             <SearchForm/>
-            <SearchResults url="/searchFoods" fields={["name", "description", "itemsPerPage", "nutrients", "tags"]}>
+            <SearchResults url="/searchFoods" fields={["name", "description", "itemsPerPage", "nutrients", "tags", "range"]}>
                 <FoodListItem/>
             </SearchResults>
         </>

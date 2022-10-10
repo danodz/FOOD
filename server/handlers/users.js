@@ -3,9 +3,10 @@ const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 const {db} = require("../db");
 const { newFood } = require("../utils");
+const opencage = require('opencage-api-client');
 
 require("dotenv").config();
-const {secret} = process.env;
+const {secret, OPENCAGE_API_KEY} = process.env;
 
 //users
 const signup = async (req, res) => {
@@ -90,7 +91,6 @@ const currentUser = async (req, res) => {
     if(!_id)
         return res.status(200).json({status: 200, message: "no user currently signed in"})
     // $lookup against an expression value is not allowed in this atlas tier
-    console.log(_id)
     const user = await db.collection("users").findOne({_id})
     user.foods = await db.collection("foods").find({_id: {$in: user.foods}}).toArray()
     
@@ -104,10 +104,31 @@ const updateUser = async (req, res) => {
     const _id = userId(req);
     if(!userId)
         res.status(200).json({status: 200, message: "no user currently signed in"})
+
+    const newUser = req.body;
+    if(newUser.address){
+        try{
+            const geocode = await opencage.geocode({
+                key: OPENCAGE_API_KEY,
+                q: newUser.address
+            });
+            geometry = geocode.results[0].geometry;
+            newUser.location = {
+                type: "Point",
+                coordinates: [geometry.lng, geometry.lat]
+            }
+        } catch(error){
+            console.log('error', error.message);
+        }
+    }
+
     const dbRes = await db.collection("users").updateOne({_id}, {
-        "$set": req.body
+        "$set": newUser
     })
-    res.status(200).json({status:1})
+    if(newUser.address){
+        db.collection("users").createIndex( { location: "2dsphere" } )
+    }
+    res.status(200).json(dbRes)
 }
 
 const userId = (req)=>{

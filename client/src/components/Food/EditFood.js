@@ -110,13 +110,15 @@ const EditFood = ()=>{
     const food = {
       name: event.target.general.querySelector("input[name='name']").value,
       description: event.target.general.querySelector("input[name='description']").value,
-      img: images[0].data_url,
       nutrients: {},
       tags: [],
       measures: [],
       providers: [],
       ingredients: []
     }
+    if(images && images[0] && images[0].data_url)
+      food.img = images[0].data_url;
+      
     if(foodToEdit)
       food._id = foodToEdit._id;
     event.target.nutrients.querySelectorAll("fieldset").forEach((nutrient)=>{

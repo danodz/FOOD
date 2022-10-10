@@ -8,13 +8,18 @@ import { basicFetch } from "../../utils";
 
 const EditUser = ()=>{
     const {user} = useContext(UserContext)
-    const [favNutrients, setFavNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
+    const [favNutrients, setFavNutrients] = useState(
+        user.nutrients
+        ?user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}})
+        :[]
+        );
 
     const submitNutrients = (event)=>{
         event.preventDefault();
         const fields = event.target;
         const update = {
             name: fields.name.value,
+            address: fields.address.value,
             nutrients: []
         }
         event.target.querySelectorAll("select").forEach((select)=>{
@@ -27,6 +32,7 @@ const EditUser = ()=>{
         <Wrapper>
             <form onSubmit={submitNutrients}>
                 <FormInput label="Name:" name="name" defaultValue={user.name}/>
+                <FormInput label="Address:" name="address" defaultValue={user.address}/>
                 <FormList name="favoriteNutrients" values={favNutrients} setValues={setFavNutrients}>
                     <SelectNutrient name="nutrient"/>
                 </FormList>

@@ -22,6 +22,8 @@ const SearchForm = ()=>{
             query.set("description", el.description.value)
         if(el.itemsPerPage.value!="")
             query.set("itemsPerPage", el.itemsPerPage.value)
+        if(el.range.value!="")
+            query.set("range", el.range.value)
 
         const tags = [];
         el.tags.querySelectorAll("fieldset").forEach((tag)=>{
@@ -49,6 +51,7 @@ const SearchForm = ()=>{
                 <FormInput label="Name of the food contains" name="name"/>
                 <FormInput label="Description of the food contains" name="description"/>
                 <FormInput label="Items per page" name="itemsPerPage"/>
+                <FormInput label="Max distance with food's creator (km)" name="range"/>
                 <FormList name="tags" values={tags} setValues={setTags}>
                     <FormInput label="Tag" name="tag"/>
                 </FormList>

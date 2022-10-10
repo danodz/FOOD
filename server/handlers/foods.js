@@ -9,6 +9,22 @@ const searchFoods = async (req, res)=>{
     const itemsPerPage = parseInt(fallback(req.query.itemsPerPage, 50));
     const orderBy = fallback(req.query.orderBy, "name");
     const orderDir = parseInt(fallback(req.query.orderDir, 1));
+    const range = parseInt(fallback(req.query.range, null));
+    console.log(range)
+
+    let userIds = null;
+    if(range){
+        const currentUserId = userId(req);
+        const currentUser = await db.collection("users").findOne({_id:currentUserId});
+        const nearbyUsers = await db.collection("users").find({
+            location:{
+                $near: {
+                $geometry: { type: 'Point', coordinates: currentUser.location.coordinates },
+                $maxDistance: range*1000,
+            }
+        }}).toArray();
+        userIds = nearbyUsers.map((user)=>user._id);
+    }
 
     if(page < 0 || itemsPerPage <= 0){
         return res.status(400).json({
@@ -40,7 +56,6 @@ const searchFoods = async (req, res)=>{
             return match;
         });
     }
-    console.log(nutrientMatches)
 
     //filter by search terms - sort - skip - limit
     const allFoods = await db.collection("foods").aggregate([
@@ -48,7 +63,8 @@ const searchFoods = async (req, res)=>{
             '$match': {$and:[
                 filters,
                 req.query.tags?{"tags.tag": {$all: JSON.parse(req.query.tags)}}:{},
-                nutrientMatches?{$and:nutrientMatches}:{}
+                nutrientMatches?{$and:nutrientMatches}:{},
+                userIds?{userId: {$in:userIds}}:{}
             ]}
         },
         {
