@@ -7,6 +7,8 @@ const cookieSession = require("cookie-session")
 require("dotenv").config();
 const {cookieSecret} = process.env;
 
+const cnf = require("./handlers/cnf")
+
 const {
     signup,
     signin,
@@ -59,6 +61,10 @@ express()
     .post("/editProvider", editProvider)
     .get("/searchProviders", searchProviders)
     .get("/getProvider/:_id", getProvider)
+
+    //ncf
+    .get("/cnf/search/:name", cnf.search)
+    .get("/cnf/details/:id", cnf.details)
 
     .get("*", (req, res) => {
         res.status(404).json({

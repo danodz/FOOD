@@ -4,7 +4,7 @@ import FormList from "../forms/FormList";
 import SelectNutrient from "../forms/SelectNutrient";
 import ChooseProvider from "../forms/ChooseProvider"
 import { basicFetch, objToArray } from "../../utils";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import FormDisplay from "../forms/FormDisplay";
 import FormHidden from "../forms/FormHidden";
 import { UserContext } from "../context/UserContext";
@@ -12,13 +12,16 @@ import { Link, useSearchParams } from "react-router-dom";
 import ChooseFood from "../forms/ChooseFood";
 import SelectProvider from "../forms/SelectProvider";
 import ImageUpload from "../ImageUpload";
+import CNFSearch from "../CNFSearch";
 
 const EditFood = ()=>{
   const {user} = useContext(UserContext);
 
   const [query, setQuery] = useSearchParams();
   const [foodToEdit, setFoodToEdit] = useState(null);
+  const [defaultName, setDefaultName] = useState(null);
 
+  const nameField = useRef(null)
   const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
   const [tags, setTags] = useState([]);
   const [measures, setMeasures] = useState([]);
@@ -34,6 +37,7 @@ const EditFood = ()=>{
       const res = await basicFetch("/getFood/"+_id);
       const food = await res.json();
       setFoodToEdit(food)
+      setDefaultName(food.name)
       
       if(food.img){
         setImages([{data_url:food.img}])
@@ -105,6 +109,11 @@ const EditFood = ()=>{
     }
   },[])
 
+  const handleCnfData = (data)=>{
+    setDefaultName(data.name)
+    setNutrients(data.nutrients)
+  }
+
   const submit = async (event) => {
     event.preventDefault();
     const food = {
@@ -169,10 +178,12 @@ const EditFood = ()=>{
     Upload Image
     <ImageUpload images={images} onChange={onImageChange} maxNumber={1}/>
 
+    <CNFSearch handleCnfData={handleCnfData}/>
+
     <Form onSubmit={submit}>
       <fieldset name="general">
         {foodToEdit&&<Link to={"/food/"+foodToEdit._id}>Display</Link>}
-        <FormInput label="Name" name="name" defaultValue={foodToEdit&&foodToEdit.name}/>
+        <FormInput label="Name" name="name" defaultValue={defaultName&&defaultName}/>
         <FormInput label="Description" name="description" defaultValue={foodToEdit&&foodToEdit.description}/>
       </fieldset>
 
