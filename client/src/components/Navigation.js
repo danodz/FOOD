@@ -13,6 +13,7 @@ const Navigation = ()=>{
             <NavLink to="/searchFoods">Search Foods</NavLink>
             <NavLink to="/providers">New Provider</NavLink>
             <NavLink to="/searchProviders">Search Providers</NavLink>
+            <NavLink to="/compare">Compare</NavLink>
             {(userLoadStatus==="idle"&&user)?<Signout/>: <NavLink to="/signin">Sign in</NavLink>}
         </Wrapper>
     )
