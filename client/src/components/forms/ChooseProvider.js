@@ -2,12 +2,10 @@ import { useState } from "react";
 import styled from "styled-components";
 import { v4 } from "uuid";
 import { basicFetch } from "../../utils";
-import FormInput from "./FormInput";
 
 const ChooseProvider = ({providers, setProviders})=>{
     const [result, setResult] = useState(null);
     const [name, setName] = useState("");
-    const [status, setStatus] = useState("");
 
     const search = async (event)=>{
         const formData = {

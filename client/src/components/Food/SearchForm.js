@@ -18,20 +18,20 @@ const SearchForm = ()=>{
         new Set(query.entries()).forEach((entry)=>{
             query.delete(entry[0]);
         })
-        if(el.name.value!="")
+        if(el.name.value!=="")
             query.set("name", el.name.value)
-        if(el.description.value!="")
+        if(el.description.value!=="")
             query.set("description", el.description.value)
-        if(el.itemsPerPage.value!="")
+        if(el.itemsPerPage.value!=="")
             query.set("itemsPerPage", el.itemsPerPage.value)
-        if(el.range.value!="")
+        if(el.range.value!=="")
             query.set("range", el.range.value)
 
         const tags = [];
         el.tags.querySelectorAll("fieldset").forEach((tag)=>{
             tags.push(tag.querySelector("input[name='tag']").value)
         });
-        if(tags.length!=0)
+        if(tags.length!==0)
             query.set("tags", JSON.stringify(tags))
 
         const nutrients = [];
@@ -42,7 +42,7 @@ const SearchForm = ()=>{
                 maximum:nutrient.querySelector("input[name='maximum']").value,
             });
         });
-        if(nutrients.length!=0)
+        if(nutrients.length!==0)
             query.set("nutrients", JSON.stringify(nutrients))
 
         setQuery(query)

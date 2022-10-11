@@ -1,4 +1,4 @@
-const FormHidden = ({label, name, defaultValue})=>{
+const FormHidden = ({name, defaultValue})=>{
     return (
         <input type="hidden" name={name} defaultValue={defaultValue?defaultValue:""}/>
     )

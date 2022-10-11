@@ -19,7 +19,7 @@ const useComparer = ()=>{
     }
     const remove = (_id)=>{
         const newItems = [...items]
-        const index = newItems.findIndex((_id)=>_id===_id)
+        const index = newItems.findIndex((id)=>id===_id)
         newItems.splice(index,1)
         localStorage.setItem("comparer",JSON.stringify(newItems))
         setItems(newItems)

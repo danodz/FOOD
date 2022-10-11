@@ -26,7 +26,6 @@ const Signin = ()=>{
                     password: password
                 })
             })
-            const data = await res.json()
             if(res.ok){
                 loadUser()
                 navigate("/profile")

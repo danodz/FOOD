@@ -2,7 +2,6 @@ import { useState } from "react";
 import styled from "styled-components";
 import { v4 } from "uuid";
 import { basicFetch } from "../../utils";
-import FormInput from "./FormInput";
 
 const ChooseFood = ({foods, setFoods})=>{
     const [result, setResult] = useState(null);

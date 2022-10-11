@@ -1,9 +1,8 @@
-import { adaptV4Theme, CircularProgress } from "@mui/material"
-import { cloneElement, useEffect, useState } from "react"
-import { Link, useParams, useSearchParams } from "react-router-dom"
+import { CircularProgress } from "@mui/material"
+import { cloneElement } from "react"
+import { useSearchParams } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import Pages from "./Pages"
-import LiveSearch from "../LiveSearch";
 
 const SearchResults = ({fields, url, children})=>{
     const [query] = useSearchParams()

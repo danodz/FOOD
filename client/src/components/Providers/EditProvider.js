@@ -10,7 +10,7 @@ const EditProvider = ()=>{
       description: event.target.description.value,
     }
     
-    const res = await basicFetch("/editProvider", "POST", JSON.stringify(provider))
+    await basicFetch("/editProvider", "POST", JSON.stringify(provider))
   };
 
   return (

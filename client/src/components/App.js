@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import styled from "styled-components";
 import Compare from "./Food/Compare";
 import Food from "./Food/Food";
@@ -17,6 +17,7 @@ function App() {
       <Router>
         <Navigation/>
         <Routes>
+          <Route path="/" element={<Navigate to="/profile" /> }/>
           <Route path="/signin" element={<SignForm/>}/>
           <Route path="/profile" element={<RequireUser><Profile/></RequireUser>}/>
           <Route path="/editFood" element={<RequireUser><Foods/></RequireUser>}/>

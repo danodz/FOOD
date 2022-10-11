@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
-import { v4 } from "uuid";
 import { basicFetch } from "../utils";
 
 const CNFSearch = ({handleCnfData})=>{

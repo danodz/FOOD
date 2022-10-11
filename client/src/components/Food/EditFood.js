@@ -3,8 +3,8 @@ import FormInput from "../forms/FormInput";
 import FormList from "../forms/FormList";
 import SelectNutrient from "../forms/SelectNutrient";
 import ChooseProvider from "../forms/ChooseProvider"
-import { basicFetch, objToArray } from "../../utils";
-import { useContext, useEffect, useRef, useState } from "react";
+import { basicFetch } from "../../utils";
+import { useContext, useEffect, useState } from "react";
 import FormDisplay from "../forms/FormDisplay";
 import FormHidden from "../forms/FormHidden";
 import { UserContext } from "../context/UserContext";

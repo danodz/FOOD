@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import useFetch from "../../hooks/useFetch";
 import { basicFetch } from "../../utils";
 import DisplayNutrient from "./DisplayNutrient";
 import FoodListItem from "./FoodListItem";

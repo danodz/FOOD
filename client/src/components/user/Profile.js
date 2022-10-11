@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { UserContext } from "../context/UserContext";
 import FoodListItem from "../Food/FoodListItem";

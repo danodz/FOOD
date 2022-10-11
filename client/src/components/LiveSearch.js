@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const LiveSearch = ({data, setDisplay, validation})=>{
     console.log(data)
     const handleChange = (event)=>{

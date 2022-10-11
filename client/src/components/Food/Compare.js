@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import useComparer from "../../hooks/useComparer";
-import useFetch from "../../hooks/useFetch";
 import { basicFetch } from "../../utils";
 import DisplayFood from "./DisplayFood";
 
