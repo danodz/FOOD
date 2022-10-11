@@ -5,16 +5,17 @@ import FormList from "../forms/FormList";
 import FormInput from "../forms/FormInput";
 import SelectNutrient from "../forms/SelectNutrient";
 import { basicFetch } from "../../utils";
+import Submit from "../forms/Submit"
 
 const EditUser = ()=>{
-    const {user} = useContext(UserContext)
+    const {user, loadUser} = useContext(UserContext)
     const [favNutrients, setFavNutrients] = useState(
         user.nutrients
         ?user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}})
         :[]
         );
 
-    const submitNutrients = (event)=>{
+    const submitNutrients = async (event)=>{
         event.preventDefault();
         const fields = event.target;
         const update = {
@@ -26,22 +27,25 @@ const EditUser = ()=>{
             if(select.value !== "none")
                 update.nutrients.push(select.value)
         })
-        basicFetch("/updateUser", "PATCH", JSON.stringify(update))
+        await basicFetch("/updateUser", "PATCH", JSON.stringify(update))
+        loadUser();
     }
     return (
-        <Wrapper>
-            <form onSubmit={submitNutrients}>
+        <form onSubmit={submitNutrients}>
+            <Submit>Submit</Submit>
+            <General>
                 <FormInput label="Name:" name="name" defaultValue={user.name}/>
                 <FormInput label="Address:" name="address" defaultValue={user.address}/>
-                <FormList name="favoriteNutrients" values={favNutrients} setValues={setFavNutrients}>
-                    <SelectNutrient name="nutrient"/>
-                </FormList>
-                <button type="submit">Submit</button>
-            </form>
-        </Wrapper>
+            </General>
+            <FormList name="favoriteNutrients" values={favNutrients} setValues={setFavNutrients}>
+                <SelectNutrient name="nutrient"/>
+            </FormList>
+            <Submit>Submit</Submit>
+        </form>
     )
 }
 export default EditUser;
 
-const Wrapper=styled.div`
+const General=styled.div`
+    width: 300px;
 `

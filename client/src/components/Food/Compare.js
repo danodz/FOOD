@@ -29,4 +29,8 @@ export default Compare;
 
 const Wrapper = styled.div`
     display: flex;
+
+    >div{
+        width: 50%;
+    }
 `

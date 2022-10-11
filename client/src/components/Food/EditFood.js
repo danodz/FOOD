@@ -13,6 +13,7 @@ import ChooseFood from "../forms/ChooseFood";
 import SelectProvider from "../forms/SelectProvider";
 import ImageUpload from "../ImageUpload";
 import CNFSearch from "../CNFSearch";
+import Submit from "../forms/Submit";
 
 const EditFood = ()=>{
   const {user} = useContext(UserContext);
@@ -21,7 +22,6 @@ const EditFood = ()=>{
   const [foodToEdit, setFoodToEdit] = useState(null);
   const [defaultName, setDefaultName] = useState(null);
 
-  const nameField = useRef(null)
   const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
   const [tags, setTags] = useState([]);
   const [measures, setMeasures] = useState([]);
@@ -127,6 +127,8 @@ const EditFood = ()=>{
     }
     if(images && images[0] && images[0].data_url)
       food.img = images[0].data_url;
+    else
+      food.img = ""
       
     if(foodToEdit)
       food._id = foodToEdit._id;
@@ -175,17 +177,17 @@ const EditFood = ()=>{
     }
   }
   return ( <>
-    Upload Image
-    <ImageUpload images={images} onChange={onImageChange} maxNumber={1}/>
-
     <CNFSearch handleCnfData={handleCnfData}/>
 
-    <Form onSubmit={submit}>
-      <fieldset name="general">
+    <form onSubmit={submit}>
+      <Submit>Submit</Submit>
+      <General name="general">
         {foodToEdit&&<Link to={"/food/"+foodToEdit._id}>Display</Link>}
         <FormInput label="Name" name="name" defaultValue={defaultName&&defaultName}/>
         <FormInput label="Description" name="description" defaultValue={foodToEdit&&foodToEdit.description}/>
-      </fieldset>
+        <ImageUpload images={images} onChange={onImageChange} maxNumber={1}/>
+      </General>
+      <Line></Line>
 
       <FormList name="tags" values={tags} setValues={setTags}>
         <FormInput label="Tag" name="tag"/>
@@ -201,8 +203,8 @@ const EditFood = ()=>{
           <FormInput label="Factor" name="factor" />
       </FormList>
 
-      <ChooseProvider providers={providers} setProviders={setProviders}/>
-      <FormList name="providers" values={providers} setValues={setProviders} noAdd={true}>
+      
+      <FormList searchAdder={<ChooseProvider providers={providers} setProviders={setProviders}/>} name="providers" values={providers} setValues={setProviders} noAdd={true}>
         <FormDisplay label="name" name="name"/>
         <FormHidden label="id" name="providerId"/>
         <FormInput label="Buying format" name="format"/>
@@ -210,18 +212,26 @@ const EditFood = ()=>{
         <FormInput label="Price per 100g" name="price100g"/>
       </FormList>
 
-      <ChooseFood foods={ingredients} setFoods={setIngredients}/>
-      <FormList name="ingredients" values={ingredients} setValues={setIngredients} noAdd={true}>
+      <FormList searchAdder={<ChooseFood foods={ingredients} setFoods={setIngredients}/>} name="ingredients" values={ingredients} setValues={setIngredients} noAdd={true}>
         <FormDisplay label="name" name="name"/>
         <FormHidden label="id" name="foodId"/>
         <FormInput label="Amount" name="amount"/>
         <SelectProvider name="ingredientProviders"/>
       </FormList>
 
-      <button type="submit">Submit</button>
-    </Form></>
+      <Submit>Submit</Submit>
+    </form></>
   )
 }
 export default EditFood;
-const Form = styled.form`
+const General = styled.fieldset`
+  width: 300px;
+  margin-bottom: 15px;
+
+  >div{
+    margin-bottom: 10px;
+  }
+`
+const Line = styled.div`
+  border-bottom: 1px solid lightgrey;
 `

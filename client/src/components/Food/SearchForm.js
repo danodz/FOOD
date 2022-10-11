@@ -1,8 +1,10 @@
+import styled from "styled-components";
 import { useSearchParams } from "react-router-dom";
 import FormInput from "../forms/FormInput";
 import SelectNutrient from "../forms/SelectNutrient";
 import FormList from "../forms/FormList";
 import { useState } from "react";
+import Submit from "../forms/Submit";
 
 const SearchForm = ()=>{
     const [query, setQuery] = useSearchParams()
@@ -48,10 +50,12 @@ const SearchForm = ()=>{
     return (
         <>
             <form onSubmit={submit}>
-                <FormInput label="Name of the food contains" name="name"/>
-                <FormInput label="Description of the food contains" name="description"/>
-                <FormInput label="Items per page" name="itemsPerPage"/>
-                <FormInput label="Max distance with food's creator (km)" name="range"/>
+                <General>
+                    <FormInput label="Name of the food contains" name="name"/>
+                    <FormInput label="Description of the food contains" name="description"/>
+                    <FormInput label="Items per page" name="itemsPerPage"/>
+                    <FormInput label="Max distance with food's creator (km)" name="range"/>
+                </General>
                 <FormList name="tags" values={tags} setValues={setTags}>
                     <FormInput label="Tag" name="tag"/>
                 </FormList>
@@ -60,9 +64,16 @@ const SearchForm = ()=>{
                     <FormInput label="Minimum" name="minimum"/>
                     <FormInput label="Maximum" name="maximum"/>
                 </FormList>
-                <button type="submit">Submit</button>
+                <Submit>Submit</Submit>
             </form>
         </>
     )
 }
 export default SearchForm;
+
+const General = styled.div`
+    width: 500px;
+    div{
+        margin-bottom: 10px;
+    }
+`

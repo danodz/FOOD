@@ -19,14 +19,17 @@ const Food = ()=>{
     return (
         <>
             {currentFood&&status==="success"?<>
-                {historyStatus==="success"&&<>
-                    {history.versions.map((version, i)=>{
-                        return <button key={i} onClick={()=>setCurrentVersion(version)}>{
-                            history.versions.length - (history.versions.length-i) + 1
-                        }</button>
-                    })}
-                    <button key={-1} onClick={()=>setCurrentVersion(null)}>No history</button>
-                </>}
+                {historyStatus==="success"&&
+                    <History>
+                        <div className="compareTxt">Compare with older version</div>
+                        {history.versions.map((version, i)=>{
+                            return <button key={i} onClick={()=>setCurrentVersion(version)}>{
+                                history.versions.length - (history.versions.length-i) + 1
+                            }</button>
+                        })}
+                        {currentVersion&&<button key={-1} onClick={()=>setCurrentVersion(null)}>Hide history</button>}
+                    </History>
+                }
 
                 <Wrapper>
                     <DisplayFood food={currentFood}/>
@@ -40,5 +43,21 @@ const Food = ()=>{
 export default Food;
 
 const Wrapper = styled.div`
+    margin-top: 25px;
     display: flex;
+`
+const History = styled.div`
+    .compareTxt {
+        margin-bottom: 10px;
+    }
+    button{
+        text-decoration: none;
+        color: black;
+        font-size: 13px;
+        cursor: pointer;
+        background: lightgray;
+        border: 1px solid black;
+        margin-right: 10px;
+        padding: 6px;
+    }
 `

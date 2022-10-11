@@ -9,7 +9,7 @@ const Navigation = ()=>{
     return (
         <Wrapper>
             <NavLink to="/profile">Profile</NavLink>
-            <NavLink to="/foods">New Food</NavLink>
+            <NavLink to="/editFood">Edit Food</NavLink>
             <NavLink to="/searchFoods">Search Foods</NavLink>
             <NavLink to="/providers">New Provider</NavLink>
             <NavLink to="/searchProviders">Search Providers</NavLink>
@@ -22,6 +22,9 @@ export default Navigation;
 
 const Wrapper = styled.div`
     display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 25px;
     a,button{
         padding: 10px 25px;
         text-decoration: none;

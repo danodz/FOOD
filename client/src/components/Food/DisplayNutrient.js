@@ -20,5 +20,6 @@ export default DisplayNutrient;
 const Wrapper = styled.div`
     border: 1px solid black;
     margin-right: 25px;
+    margin-top: 10px;
     padding: 10px;
 `

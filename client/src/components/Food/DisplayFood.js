@@ -33,7 +33,11 @@ const DisplayFood = ({food})=>{
         if(food.ingredients)
             Promise.all(food.ingredients.map(async (ingredient)=>{
                 const res = await basicFetch("/getFood/"+ingredient.foodId);
-                return await res.json();
+                const data = await res.json();
+                return {
+                    ...data,
+                    amount:ingredient.amount
+                }
             })).then(setIngredients);
 
         if(food.providers){
@@ -54,11 +58,11 @@ const DisplayFood = ({food})=>{
     return (
         <Wrapper>
             <General>
+                <Link className="editLink" to={"/editFood?_id="+food._id}>Edit</Link>
                 <h1>General Info</h1>
                 <div>
                     <div>Name:{food.name}</div>
                     <div>Description:{food.description}</div>
-                    <Link to={"/foods?_id="+food._id}>Edit</Link>
                     <div>Ingredients cost : {food.ingredientsCostTotal}</div>
                     {food.img&&<img src={food.img}/>}
                 </div>
@@ -67,7 +71,10 @@ const DisplayFood = ({food})=>{
                 <h1>Tags</h1>
                 <div className="section">
                     {food.tags.map((tag)=>{
-                        return <div key={tag._id}>{tag.tag}</div>
+                        return <span className="tag" key={tag._id}>
+                            {tag.tag}
+                            <span className="comma">, </span>
+                        </span>
                     })}
                 </div>
             </Tags>}
@@ -120,14 +127,31 @@ const DisplayFood = ({food})=>{
 }
 export default DisplayFood;
 const Wrapper = styled.div`
-    .section{
-        display: flex;
+    h1{
+        font-size: 17px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+
+    .editLink{
+        display: inline-block;
+        color: black;
+        font-size: 15px;
+        cursor: pointer;
+        background: lightgray;
+        border: 1px solid black;
+        margin-right: 10px;
+        padding: 10px;
     }
 `
 const General = styled.div`
 `
 
 const Nutrients = styled.div`
+    .section{
+        display: flex;
+    }
+
 `
 
 const Ingredients = styled.div`
@@ -138,4 +162,11 @@ const Measures = styled.div`
 const Providers = styled.div`
 `
 const Tags = styled.div`
+    .comma{
+        white-space: pre;
+    }
+    .tag:last-child .comma{
+        display: none;
+        margin:0;
+    }
 `

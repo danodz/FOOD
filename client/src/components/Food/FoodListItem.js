@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import { Link } from "react-router-dom";
 import { basicFetch } from "../../utils";
 import ComparerBtn from "../ComparerBtn";
+import styled from "styled-components";
 
 const FoodListItem = ({food})=>{
     const {user, loadUser} = useContext(UserContext);
@@ -22,12 +23,43 @@ const FoodListItem = ({food})=>{
         loadUser();
         console.log(response)
     }
-    return <div key={food._id}>{food.name}
-        {owned&&<Link to={"/foods?_id="+food._id}>Edit</Link>}
+    return <Wrapper key={food._id}>
+        <div className="name">
+            {food.amount&&food.amount+"g: "}
+            {food.name}
+        </div>
+        {owned&&<Link to={"/editFood?_id="+food._id}>Edit</Link>}
         {owned&&<button onClick={deleteFood}>Delete</button>}
         <button onClick={forkFood}>Copy</button>
         <ComparerBtn _id={food._id}/>
         <Link to={"/food/"+food._id}>Details</Link>
-    </div>;
+    </Wrapper>;
 }
 export default FoodListItem;
+
+const Wrapper = styled.div`
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid lightgray;
+    display: flex;
+
+    .name{
+        width: 200px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+    }
+
+    a,button{
+        text-decoration: none;
+        color: black;
+        font-size: 15px;
+        cursor: pointer;
+
+        background: lightgray;
+        border: 1px solid black;
+        margin-right: 10px;
+        padding: 10px;
+    }
+`

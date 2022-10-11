@@ -8,7 +8,6 @@ export const UserProvider = ({ children }) => {
 
     const loadUser = async ()=>{
         setUserLoadStatus("loading");
-        //setUser(null);
         const res = await fetch("/currentUser")
         if(res.ok) {
             const data = await res.json()

@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import styled from "styled-components";
 import { v4 } from "uuid";
 import { basicFetch } from "../utils";
 
 const CNFSearch = ({handleCnfData})=>{
     const [result, setResult] = useState(null);
     const [name, setName] = useState("");
+    const nameField = useRef(null);
 
     const search = async (event)=>{
         if(!name){
@@ -17,9 +19,14 @@ const CNFSearch = ({handleCnfData})=>{
         setResult(data);
     }
 
+    const clear = ()=>{
+        setResult(null)
+    }
+
     const setData = async (name,id) => {
         const res = await basicFetch("/cnf/details/"+id);
         const data = await res.json();
+        setResult(null)
         handleCnfData({
             name,
             nutrients: data
@@ -28,18 +35,42 @@ const CNFSearch = ({handleCnfData})=>{
 
 
     return (
-        <div>
+        <Wrapper>
             <label>
                 Search in the canadian nutrient file
-                <input onChange={(e)=>{setName(e.target.value)}}/>
+                <input ref={nameField} onChange={(e)=>{setName(e.target.value)}}/>
             </label>
             <button type="button" onClick={search}>Search</button>
-            <div>
+            <button type="button" onClick={clear}>Clear</button>
+            <div className="results">
                 {result&&result.map((food)=>{
-                    return <button type="button" key={food.id} onClick={()=>setData(food.name,food.id)}>{food.name}</button>
+                    return <button className="resultBtn" type="button" key={food.id} onClick={()=>setData(food.name,food.id)}>{food.name}</button>
                 })}
             </div>
-        </div>
+        </Wrapper>
     )
 }
 export default CNFSearch;
+
+const Wrapper = styled.div`
+    margin-bottom: 10px;
+    input,>button{
+        margin-left: 10px;
+    }
+
+    .results{
+        margin-top: 25px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .resultBtn{
+        width: 150px;
+        text-align: left;
+        padding: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+`
