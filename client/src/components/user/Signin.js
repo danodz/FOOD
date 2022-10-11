@@ -41,39 +41,36 @@ const Signin = ()=>{
     return (
         <Wrapper onSubmit={submit}>
             <h1>Sign In</h1>
-            <label>Username:
-                <input value={username} onChange={(event)=>{setUsername(event.target.value)}}/>
+            <label>
+                <span>Username:</span>
+                <input required value={username} onChange={(event)=>{setUsername(event.target.value)}}/>
             </label>
-            <label>Password:
-                <input value={password} onChange={(event)=>{setPassword(event.target.value)}}/>
+            <label>
+                <span>Password:</span>
+                <input required value={password} onChange={(event)=>{setPassword(event.target.value)}}/>
             </label>
             {showErr && <>username or password invalid</>}
-            <Input type="submit" value="Sign In"/>
+            <button type="submit">Sign in</button>
         </Wrapper>
     )
 }
 export default Signin;
 
 const Wrapper = styled.form`
-width: 400px;
+    display: flex;
+    flex-direction: column;
 
-h1{
-    color: #112a3b;
-}
+    h1{
+        text-align: center;
+    }
 
-label {
-    font-size: 20px;
-    color: #112a3b;
-}
+    label{
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
 
-input {
-    padding: 10px;
-}
-`
-
-const Input = styled.input`
-background-color: #112a3b;
-color:#fff;
-font-size: 20px;
-cursor: pointer;
+    button{
+        margin-top: 10px;
+    }
 `

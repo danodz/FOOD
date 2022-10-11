@@ -11,9 +11,8 @@ const Navigation = ()=>{
             <NavLink to="/profile">Profile</NavLink>
             <NavLink to="/editFood">Edit Food</NavLink>
             <NavLink to="/searchFoods">Search Foods</NavLink>
-            <NavLink to="/providers">New Provider</NavLink>
-            <NavLink to="/searchProviders">Search Providers</NavLink>
             <NavLink to="/compare">Compare</NavLink>
+            <NavLink to="/editProvider">Edit Provider</NavLink>
             {(userLoadStatus==="idle"&&user)?<Signout/>: <NavLink to="/signin">Sign in</NavLink>}
         </Wrapper>
     )

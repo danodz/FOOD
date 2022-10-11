@@ -60,6 +60,10 @@ a{
     text-decoration: none;
 }
 
+button{
+	cursor: pointer;
+}
+
 .MuiCircularProgress-root{
 	position: relative;
 	left: 50%;

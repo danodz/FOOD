@@ -7,14 +7,17 @@ import FormInput from "./FormInput";
 const ChooseProvider = ({providers, setProviders})=>{
     const [result, setResult] = useState(null);
     const [name, setName] = useState("");
+    const [status, setStatus] = useState("");
 
     const search = async (event)=>{
         const formData = {
             name
         };
         const res = await basicFetch("/searchProviders?"+new URLSearchParams(formData));
-        const data = await res.json();
-        setResult(data);
+        if(res.ok){
+            const data = await res.json();
+            setResult(data);
+        }
     }
 
     const addProvider = (name,providerId) => {

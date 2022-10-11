@@ -53,7 +53,7 @@ const SearchForm = ()=>{
                 <General>
                     <FormInput label="Name of the food contains" name="name"/>
                     <FormInput label="Description of the food contains" name="description"/>
-                    <FormInput label="Items per page" name="itemsPerPage"/>
+                    <FormInput type="number" label="Items per page" name="itemsPerPage"/>
                     <FormInput label="Max distance with food's creator (km)" name="range"/>
                 </General>
                 <FormList name="tags" values={tags} setValues={setTags}>
@@ -61,8 +61,8 @@ const SearchForm = ()=>{
                 </FormList>
                 <FormList name="nutrients" values={nutrients} setValues={setNutrients}>
                     <SelectNutrient label="Nutrients" name="id"/>
-                    <FormInput label="Minimum" name="minimum"/>
-                    <FormInput label="Maximum" name="maximum"/>
+                    <FormInput type="number" label="Minimum" name="minimum"/>
+                    <FormInput type="number" label="Maximum" name="maximum"/>
                 </FormList>
                 <Submit>Submit</Submit>
             </form>

@@ -176,14 +176,25 @@ const EditFood = ()=>{
       setQuery(query)
     }
   }
+
+  const reset = (event)=>{
+    query.delete("_id")
+    setFoodToEdit(null);
+    setImages([])
+    setQuery(query)
+    setDefaultName("");
+  }
+
   return ( <>
     <CNFSearch handleCnfData={handleCnfData}/>
 
-    <form onSubmit={submit}>
+    {foodToEdit&&<DisplayLink to={"/food/"+foodToEdit._id}>Display</DisplayLink>}
+
+    <form onSubmit={submit} onReset={reset}>
       <Submit>Submit</Submit>
+      <Reset type="reset">New Food</Reset>
       <General name="general">
-        {foodToEdit&&<Link to={"/food/"+foodToEdit._id}>Display</Link>}
-        <FormInput label="Name" name="name" defaultValue={defaultName&&defaultName}/>
+        <FormInput required label="Name" name="name" defaultValue={defaultName&&defaultName}/>
         <FormInput label="Description" name="description" defaultValue={foodToEdit&&foodToEdit.description}/>
         <ImageUpload images={images} onChange={onImageChange} maxNumber={1}/>
       </General>
@@ -195,12 +206,12 @@ const EditFood = ()=>{
 
       <FormList name="nutrients" values={nutrients} setValues={setNutrients}>
           <SelectNutrient name="nutrient"/>
-          <FormInput label="Value" name="value" />
+          <FormInput type="number" min="0" label="Value" name="value" />
       </FormList>
 
       <FormList name="measures" values={measures} setValues={setMeasures}>
           <FormInput label="Name" name="factorName" />
-          <FormInput label="Factor" name="factor" />
+          <FormInput type="number" min="0" step="0.01" label="Factor" name="factor" />
       </FormList>
 
       
@@ -234,4 +245,25 @@ const General = styled.fieldset`
 `
 const Line = styled.div`
   border-bottom: 1px solid lightgrey;
+`
+
+const Reset = styled.button`
+    font-size: 20px;
+    padding: 6px 20px;
+    background: lightgray;
+    border: 1px solid black;
+    cursor: pointer;
+    border-radius: 25px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+`
+
+const DisplayLink = styled(Link)`
+  font-size: 20px;
+  padding: 6px 20px;
+  background: lightgray;
+  border: 1px solid black;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: inline-block;
 `

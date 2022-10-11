@@ -34,7 +34,7 @@ const EditUser = ()=>{
         <form onSubmit={submitNutrients}>
             <Submit>Submit</Submit>
             <General>
-                <FormInput label="Name:" name="name" defaultValue={user.name}/>
+                <FormInput required label="Name:" name="name" defaultValue={user.name}/>
                 <FormInput label="Address:" name="address" defaultValue={user.address}/>
             </General>
             <FormList name="favoriteNutrients" values={favNutrients} setValues={setFavNutrients}>

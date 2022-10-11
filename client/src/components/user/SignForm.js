@@ -16,19 +16,6 @@ const Wrapper = styled.div`
     margin-top: 50px;
     display: flex;
     justify-content: space-evenly;
-    height: 100vh;
-
-    form{
-        display: flex;
-        flex-direction: column;
-    }
-    form label{
-        margin-bottom: 25px;
-    }
-    form label input{
-        width: 100%;
-    }
-    h1{
-        text-align: center;
-    }
+    width: 1000px;
+    margin: 0 auto;
 `

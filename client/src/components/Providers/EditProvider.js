@@ -1,8 +1,5 @@
 import styled from "styled-components";
 import FormInput from "../forms/FormInput";
-import FormList from "../forms/FormList";
-import SelectNutrient from "../forms/SelectNutrient";
-import { v4 } from "uuid";
 import { basicFetch } from "../../utils";
 
 const EditProvider = ()=>{
@@ -14,7 +11,6 @@ const EditProvider = ()=>{
     }
     
     const res = await basicFetch("/editProvider", "POST", JSON.stringify(provider))
-    console.log(await res.json())
   };
 
   return (
@@ -28,4 +24,5 @@ const EditProvider = ()=>{
 }
 export default EditProvider;
 const Form = styled.form`
+  width: 300px;
 `

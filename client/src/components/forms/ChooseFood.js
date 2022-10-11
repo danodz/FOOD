@@ -13,15 +13,16 @@ const ChooseFood = ({foods, setFoods})=>{
             name
         };
         const res = await basicFetch("/searchFoods?"+new URLSearchParams(formData));
-        const data = await res.json();
-        setResult(data);
+        if(res.ok){
+            const data = await res.json();
+            setResult(data);
+        }
     }
 
     const addFood = async (food) => {
         const _id = v4()
         const res = await basicFetch("/getFood/"+food._id);
         const ingredientsData = await res.json();
-        console.log(ingredientsData)
         const ingredient = {
             _id: _id,
             foodId: food._id,
@@ -37,7 +38,6 @@ const ChooseFood = ({foods, setFoods})=>{
             }
         }
         setFoods([...foods, ingredient])
-        //setFoods([...foods, {name:food.name, foodId:food.foodId, _id, ingredientProviders}])
     }
 
     return (

@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
-const FormInput = ({label, name, defaultValue})=>{
+const FormInput = ({label, name, defaultValue, required, type, max, min, step})=>{
     return (
         <div>
             <Label><span>{label}</span>
-                <input name={name} defaultValue={defaultValue?defaultValue:""}/>
+                <input required={required&&required} type={type} name={name} defaultValue={defaultValue?defaultValue:""} max={max} min={min} step={step} />
             </Label>
         </div>
     )
