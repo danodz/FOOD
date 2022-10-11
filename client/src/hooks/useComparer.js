@@ -15,7 +15,6 @@ const useComparer = ()=>{
         const newItems = [...items, _id]
         localStorage.setItem("comparer", JSON.stringify(newItems))
         setItems(newItems)
-        console.log(items)
     }
     const remove = (_id)=>{
         const newItems = [...items]
@@ -23,7 +22,6 @@ const useComparer = ()=>{
         newItems.splice(index,1)
         localStorage.setItem("comparer",JSON.stringify(newItems))
         setItems(newItems)
-        console.log(items)
     }
     
     return {

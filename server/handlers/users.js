@@ -92,10 +92,11 @@ const currentUser = async (req, res) => {
         return res.status(200).json({status: 200, message: "no user currently signed in"})
     // $lookup against an expression value is not allowed in this atlas tier
     const user = await db.collection("users").findOne({_id})
-    user.foods = await db.collection("foods").find({_id: {$in: user.foods}}).toArray()
     
-    if(user)
+    if(user){
+        user.foods = await db.collection("foods").find({_id: {$in: user.foods}}).toArray()
         res.status(200).json({status: 200, data: user, message: "user retrieved"})
+    }
     else
         res.status(500).json({status: 500, message: "User is logged in but not found"})
 }
@@ -152,8 +153,15 @@ const forkFood = async (req, res)=>{
 }
 
 const deleteFood = async (req, res)=>{
-    const dbRes = await db.collection("foods").deleteOne({_id:req.params._id});
-    res.status(200).json(dbRes)
+    const food = await db.collection("foods").findOne({_id:req.params._id});
+    if(food.userId === userId(req)){
+        const dbRes = {};
+        dbRes.food = await db.collection("foods").deleteOne({_id:req.params._id});
+        dbRes.history = await db.collection("foodsHistory").deleteOne({_id:req.params._id});
+        res.status(200).json(dbRes)
+    } else {
+        res.status(403).json({message: "You do not own this food"});
+    }
 }
 
 module.exports = {

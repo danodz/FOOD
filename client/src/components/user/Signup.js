@@ -47,7 +47,7 @@ const Signup = ()=>{
             </label>
             <label>
                 <span>Password:</span>
-                <input required value={password} onChange={(event)=>{setPassword(event.target.value)}}/>
+                <input required type="password" value={password} onChange={(event)=>{setPassword(event.target.value)}}/>
             </label>
             <label>
                 <span>Display name:</span>

@@ -14,7 +14,6 @@ const CNFSearch = ({handleCnfData})=>{
         }
         const res = await basicFetch("/cnf/search/"+name);
         const data = await res.json();
-        console.log(data)
         setResult(data);
     }
 

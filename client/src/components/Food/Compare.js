@@ -12,6 +12,7 @@ const Compare = ()=>{
         Promise.all(comparer.items.map(async (_id)=>{
             const res = await basicFetch("/getFood/"+_id);
             const food = await res.json();
+            console.log(food)
             return food;
         })).then(setFoods)
     }, [])

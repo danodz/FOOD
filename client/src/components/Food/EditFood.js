@@ -16,13 +16,17 @@ import CNFSearch from "../CNFSearch";
 import Submit from "../forms/Submit";
 
 const EditFood = ()=>{
-  const {user} = useContext(UserContext);
+  const {user, loadUser} = useContext(UserContext);
 
   const [query, setQuery] = useSearchParams();
   const [foodToEdit, setFoodToEdit] = useState(null);
   const [defaultName, setDefaultName] = useState(null);
 
-  const [nutrients, setNutrients] = useState(user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}}));
+  const [nutrients, setNutrients] = useState(
+    user.nutrients
+    ?user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}})
+    :[]
+    );
   const [tags, setTags] = useState([]);
   const [measures, setMeasures] = useState([]);
   const [providers, setProviders] = useState([]);
@@ -169,11 +173,11 @@ const EditFood = ()=>{
     
     const res = await basicFetch("/editFood", "POST",JSON.stringify(food))
     const response = await res.json()
-    console.log(response)
     if(!foodToEdit){
       query.set("_id", response.new.insertedId)
       loadFood(response.new.insertedId)
       setQuery(query)
+      loadUser();
     }
   }
 
@@ -206,12 +210,12 @@ const EditFood = ()=>{
 
       <FormList name="nutrients" values={nutrients} setValues={setNutrients}>
           <SelectNutrient name="nutrient"/>
-          <FormInput type="number" min="0" label="Value" name="value" />
+          <FormInput type="number" min="0" step="0.001" label="Value" name="value" />
       </FormList>
 
       <FormList name="measures" values={measures} setValues={setMeasures}>
           <FormInput label="Name" name="factorName" />
-          <FormInput type="number" min="0" step="0.01" label="Factor" name="factor" />
+          <FormInput type="number" min="0" step="0.001" label="Factor" name="factor" />
       </FormList>
 
       
@@ -219,8 +223,8 @@ const EditFood = ()=>{
         <FormDisplay label="name" name="name"/>
         <FormHidden label="id" name="providerId"/>
         <FormInput label="Buying format" name="format"/>
-        <FormInput label="Price" name="price"/>
-        <FormInput label="Price per 100g" name="price100g"/>
+        <FormInput type="number" min="0" step="0.01" label="Price" name="price"/>
+        <FormInput type="number" min="0" step="0.01" label="Price per 100g" name="price100g"/>
       </FormList>
 
       <FormList searchAdder={<ChooseFood foods={ingredients} setFoods={setIngredients}/>} name="ingredients" values={ingredients} setValues={setIngredients} noAdd={true}>

@@ -10,7 +10,6 @@ const searchFoods = async (req, res)=>{
     const orderBy = fallback(req.query.orderBy, "name");
     const orderDir = parseInt(fallback(req.query.orderDir, 1));
     const range = parseInt(fallback(req.query.range, null));
-    console.log(range)
 
     let userIds = null;
     if(range){
@@ -102,8 +101,10 @@ const getFood = async (req, res)=>{
     if(food){
         food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
         food.ingredientsCostTotal = await getIngredientsCost(food)
+        res.status(200).json(food)
+    } else {
+        res.status(404).json({message: "food not found"})
     }
-    res.status(200).json(food)
 }
 
 const getIngredientsCost = async(food)=>{

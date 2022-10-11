@@ -46,7 +46,7 @@ const Signin = ()=>{
             </label>
             <label>
                 <span>Password:</span>
-                <input required value={password} onChange={(event)=>{setPassword(event.target.value)}}/>
+                <input type="password" required value={password} onChange={(event)=>{setPassword(event.target.value)}}/>
             </label>
             {showErr && <>username or password invalid</>}
             <button type="submit">Sign in</button>

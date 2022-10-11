@@ -4,7 +4,7 @@ const anref = require("./data/anref")
 
 const nutrientGroups = {};
 const nutrientGroupsRequest = new XMLHttpRequest();
-nutrientGroupsRequest.open("GET", "https://aliments-nutrition.canada.ca/api/fichier-canadien-elements-nutritifs/nutrientgroup/?lang=fr&type=json", true);
+nutrientGroupsRequest.open("GET", "https://aliments-nutrition.canada.ca/api/fichier-canadien-elements-nutritifs/nutrientgroup/?type=json", true);
 nutrientGroupsRequest.onload = (e) => {
     if (nutrientGroupsRequest.readyState === 4 && nutrientGroupsRequest.status === 200)
     {
@@ -13,7 +13,7 @@ nutrientGroupsRequest.onload = (e) => {
         {
             const group = {}
             group.name = groups[i].nutrient_group_name;
-            group.order = groups[i].nutrient_group_order;
+            group.order = JSON.stringify(groups[i].nutrient_group_order);
             nutrientGroups[groups[i].nutrient_group_id] = group;
         }
         submit();
@@ -22,7 +22,7 @@ nutrientGroupsRequest.onload = (e) => {
 
 const nutrientNames = {};
 const nutrientNamesRequest = new XMLHttpRequest();
-nutrientNamesRequest.open("GET", "https://aliments-nutrition.canada.ca/api/fichier-canadien-elements-nutritifs/nutrientname/?lang=fr&type=json", true);
+nutrientNamesRequest.open("GET", "https://aliments-nutrition.canada.ca/api/fichier-canadien-elements-nutritifs/nutrientname/?type=json", true);
 nutrientNamesRequest.onload = (e) => {
     if (nutrientNamesRequest.readyState === 4 && nutrientNamesRequest.status === 200)
     {
@@ -33,15 +33,15 @@ nutrientNamesRequest.onload = (e) => {
         {
             const name = names[i];
             const nutName = {
-                id : name.nutrient_name_id,
+                id : JSON.stringify(name.nutrient_name_id),
                 name : name.nutrient_web_name,
                 unit : name.unit,
-                group : name.nutrient_group_id,
+                group : JSON.stringify(name.nutrient_group_id),
                 anref : {}
             };
             for(j in anref.names){
                 if(anref[nutName.id])
-                    nutName.anref[anref.names[j]] = anref[nutName.id][j]
+                    nutName.anref[anref.names[j]] = JSON.stringify(anref[nutName.id][j]);
             }
             nutrientNames[nutName.id] = nutName;
         }

@@ -15,13 +15,11 @@ const FoodListItem = ({food})=>{
         const res = await basicFetch("/forkFood/"+food._id)
         const response = await res.json();
         loadUser();
-        console.log(response)
     }
     const deleteFood = async ()=>{
         const res = await basicFetch("/deleteFood/"+food._id)
         const response = await res.json();
         loadUser();
-        console.log(response)
     }
     return <Wrapper key={food._id}>
         <div className="name">
