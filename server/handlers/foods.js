@@ -51,10 +51,15 @@ const searchFoods = async (req, res)=>{
         nutrientMatches = JSON.parse(req.query.nutrients).map((nutrient)=>{
             const key = "nutrients."+nutrient.id
             const match = {}
-            match[key] = {"$gte": nutrient.minimum, "$lte": nutrient.maximum}
+            match[key] = {};
+            if(nutrient.minimum)
+                match[key].$gte = parseInt(nutrient.minimum)
+            if(nutrient.maximum)
+                match[key].$lte = parseInt(nutrient.maximum)
             return match;
         });
     }
+    console.log(nutrientMatches)
 
     //filter by search terms - sort - skip - limit
     const allFoods = await db.collection("foods").aggregate([
@@ -152,6 +157,9 @@ const editFood = async (req, res)=>{
     try{
         const food = req.body;
         let dbRes = {};
+        Object.keys(food.nutrients).forEach((id)=>{
+            food.nutrients[id] = parseInt(food.nutrients[id])
+        })
         if(food._id){
             dbRes.original = await db.collection("foods").findOne({_id: food._id});
             dbRes.save = await db.collection("foodsHistory").updateOne({_id:food._id}, {$push: {versions: dbRes.original}})

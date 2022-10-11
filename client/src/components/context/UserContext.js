@@ -13,6 +13,8 @@ export const UserProvider = ({ children }) => {
             const data = await res.json()
             if(data && data.data)
                 setUser(data.data);
+            else
+                setUser(null);
         }
         setUserLoadStatus("idle");
     }

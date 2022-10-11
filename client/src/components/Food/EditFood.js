@@ -210,12 +210,12 @@ const EditFood = ()=>{
 
       <FormList name="nutrients" values={nutrients} setValues={setNutrients}>
           <SelectNutrient name="nutrient"/>
-          <FormInput type="number" min="0" step="0.001" label="Value" name="value" />
+          <FormInput type="number" min="0" step="any" label="Value" name="value" />
       </FormList>
 
       <FormList name="measures" values={measures} setValues={setMeasures}>
           <FormInput label="Name" name="factorName" />
-          <FormInput type="number" min="0" step="0.001" label="Factor" name="factor" />
+          <FormInput type="number" min="0" step="any" label="Factor" name="factor" />
       </FormList>
 
       

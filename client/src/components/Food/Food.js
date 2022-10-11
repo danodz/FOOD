@@ -45,6 +45,9 @@ export default Food;
 const Wrapper = styled.div`
     margin-top: 25px;
     display: flex;
+    >div{
+        width: 50%;
+    }
 `
 const History = styled.div`
     .compareTxt {
