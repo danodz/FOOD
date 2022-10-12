@@ -60,6 +60,7 @@ const DisplayFood = ({food})=>{
                 <Link className="editLink" to={"/editFood?_id="+food._id}>Edit</Link>
                 <h1>General Info</h1>
                 <div>
+                    <div>Owner:{food.owner.name}</div>
                     <div>Name:{food.name}</div>
                     <div>Description:{food.description}</div>
                     <div>Ingredients cost : {food.ingredientsCostTotal}</div>

@@ -70,8 +70,7 @@ const searchFoods = async (req, res)=>{
                 nutrientMatches?{$and:nutrientMatches}:{},
                 userIds?{userId: {$in:userIds}}:{}
             ]}
-        },
-        {
+        }, {
             "$facet": {
                 total:  [{ $count: "total" }],
                 foods: [
@@ -83,6 +82,17 @@ const searchFoods = async (req, res)=>{
                         '$skip': page*itemsPerPage
                     }, {
                         '$limit': itemsPerPage
+                    }, {
+                        '$lookup': {
+                            'from': 'users', 
+                            'localField': 'userId', 
+                            'foreignField': '_id', 
+                            'as': 'owner'
+                        }
+                    }, {
+                        '$unwind': {
+                            'path': '$owner'
+                        }
                     }
                 ]
             }
@@ -102,7 +112,25 @@ const searchFoods = async (req, res)=>{
 
 const getFood = async (req, res)=>{
     const _id = req.params._id;
-    const food = await db.collection("foods").findOne({_id});
+    const foodRes = await db.collection("foods").aggregate([
+        {
+            '$match': {
+                '_id': _id
+            }
+        }, {
+            '$lookup': {
+                'from': 'users', 
+                'localField': 'userId', 
+                'foreignField': '_id', 
+                'as': 'owner'
+            }
+        }, {
+            '$unwind': {
+                'path': '$owner'
+            }
+        }
+    ]).toArray();
+    const food = foodRes[0];
     if(food){
         food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
         food.ingredientsCostTotal = await getIngredientsCost(food)
