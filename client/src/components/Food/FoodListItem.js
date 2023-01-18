@@ -21,11 +21,11 @@ const FoodListItem = ({food})=>{
         const response = await res.json();
         loadUser();
     }
-    console.log(food.owner)
+
     return <Wrapper key={food._id}>
         <div className="name">
-            {food.owner.name+"'s "}
-            {food.amount&&food.amount+"g: "}
+            {food.amount&&food.amount+"g of "}
+            {food.owner&&food.owner.name+"'s "}
             {food.name}
         </div>
         {owned&&<Link to={"/editFood?_id="+food._id}>Edit</Link>}

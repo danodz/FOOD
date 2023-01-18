@@ -11,6 +11,7 @@ const Food = ()=>{
     const [history, historyStatus] = useFetch("/getHistory/"+_id);
     const [currentFood, setCurrentFood] = useState(null)
     const [currentVersion, setCurrentVersion] = useState(null)
+
     useEffect(()=>{
         if(status === "success"){
             setCurrentFood(food)
