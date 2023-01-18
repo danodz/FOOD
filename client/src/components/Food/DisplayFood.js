@@ -11,14 +11,16 @@ const DisplayFood = ({food})=>{
 
     const allNutrients = {}
 
-    if(food.ingredientsNutritionTotal)
-        Object.keys(food.ingredientsNutritionTotal).forEach((nutrient)=>{
-            if(allNutrients[nutrient]){
-                allNutrients[nutrient] += parseFloat(food.ingredientsNutritionTotal[nutrient]);
-            } else{
-                allNutrients[nutrient] = parseFloat(food.ingredientsNutritionTotal[nutrient]);
-            }
-        });
+    food.ingredientsCostTotal = 0;
+    food.ingredientsNutritionTotal = {};
+    // if(food.ingredientsNutritionTotal)
+    //     Object.keys(food.ingredientsNutritionTotal).forEach((nutrient)=>{
+    //         if(allNutrients[nutrient]){
+    //             allNutrients[nutrient] += parseFloat(food.ingredientsNutritionTotal[nutrient]);
+    //         } else{
+    //             allNutrients[nutrient] = parseFloat(food.ingredientsNutritionTotal[nutrient]);
+    //         }
+    //     });
     if(food.nutrients)
         Object.keys(food.nutrients).forEach((nutrient)=>{
             if(allNutrients[nutrient]){
@@ -29,16 +31,6 @@ const DisplayFood = ({food})=>{
         });
 
     useEffect(()=>{
-        if(food.ingredients)
-            Promise.all(food.ingredients.map(async (ingredient)=>{
-                const res = await basicFetch("/getFood/"+ingredient.foodId);
-                const data = await res.json();
-                return {
-                    ...data,
-                    amount:ingredient.amount
-                }
-            })).then(setIngredients);
-
         if(food.providers){
             const mainProviders = {};
             Promise.all(food.providers.map(async (provider)=>{
@@ -51,6 +43,8 @@ const DisplayFood = ({food})=>{
                     name: mainProviders[provider.providerId].name
                 }
             })).then(setProviders);
+        } else {
+            setProviders([])
         }
     },[])
 
@@ -102,7 +96,7 @@ const DisplayFood = ({food})=>{
                 <h1>Ingredients</h1>
                 <div className="section">
                     {ingredients.map((ingredient)=>{
-                        return <>{ingredient&&<FoodListItem key={ingredient._id} food={ingredient}/>}</>
+                        return <span key={ingredient._id}>{ingredient&&<FoodListItem food={ingredient}/>}</span>
                     })}
                 </div>
             </Ingredients>}

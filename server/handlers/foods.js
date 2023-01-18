@@ -128,12 +128,20 @@ const getFood = async (req, res)=>{
             '$unwind': {
                 'path': '$owner'
             }
+        }, {
+            "$graphLookup":{
+                from: 'foods',
+                startWith: "$ingredients.foodId",
+                connectFromField: 'ingredients.foodId',
+                connectToField: '_id',
+                as: 'ingredientsData',
+            }
         }
     ]).toArray();
     const food = foodRes[0];
     if(food){
-        food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
-        food.ingredientsCostTotal = await getIngredientsCost(food)
+        // food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
+        // food.ingredientsCostTotal = await getIngredientsCost(food)
         res.status(200).json(food)
     } else {
         res.status(404).json({message: "food not found"})
