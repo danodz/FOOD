@@ -111,7 +111,15 @@ const searchFoods = async (req, res)=>{
 }
 
 const getFood = async (req, res)=>{
-    const _id = req.params._id;
+    const food = await loadFood(req.params._id);
+    
+    if(food){
+        res.status(200).json(food)
+    } else {
+        res.status(404).json({message: "food not found"})
+    }
+}
+const loadFood = async (_id)=>{
     const foodRes = await db.collection("foods").aggregate([
         {
             '$match': {
@@ -138,21 +146,42 @@ const getFood = async (req, res)=>{
             }
         }
     ]).toArray();
+
     const food = foodRes[0];
-    if(food){
-        // food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
-        // food.ingredientsCostTotal = await getIngredientsCost(food)
-        res.status(200).json(food)
-    } else {
-        res.status(404).json({message: "food not found"})
-    }
+    if(!food)
+        return undefined;
+    food.ingredientsNutritionTotal = getIngredientsNutrition(food);
+    food.ingredientsCostTotal = getIngredientsCost(food);
+
+    food.allNutrients = {}
+
+    if(food.ingredientsNutritionTotal)
+        Object.keys(food.ingredientsNutritionTotal).forEach((nutrient)=>{
+            if(food.allNutrients[nutrient]){
+                food.allNutrients[nutrient] += parseFloat(food.ingredientsNutritionTotal[nutrient]);
+            } else{
+                food.allNutrients[nutrient] = parseFloat(food.ingredientsNutritionTotal[nutrient]);
+            }
+        });
+    if(food.nutrients)
+        Object.keys(food.nutrients).forEach((nutrient)=>{
+            if(food.allNutrients[nutrient]){
+                food.allNutrients[nutrient] += parseFloat(food.nutrients[nutrient]);
+            } else{
+                food.allNutrients[nutrient] = parseFloat(food.nutrients[nutrient]);
+            }
+        });
+
+    return food;
 }
 
-const getIngredientsCost = async(food)=>{
+const getIngredientsCost = (food)=>{
     let total = 0;
-    if(food.ingredients){
-        await Promise.all(food.ingredients.map(async (ingredient)=>{
-            const food = await db.collection("foods").findOne({_id:ingredient.foodId});
+    if(food.ingredientsData){
+        food.ingredients.map((ingredient)=>{
+            const ingredientData = food.ingredientsData.find((e)=>{
+                return ingredient.foodId == e._id
+            })
             if(food){
                 const provider = food.providers.find((provider)=>{
                     return provider._id === ingredient.provider
@@ -161,31 +190,33 @@ const getIngredientsCost = async(food)=>{
                     total += (provider.price100g)/100 * ingredient.amount;
                 }
             }
-        }));
+        });
     }
     return total;
 }
 
-const getIngredientsNutrition = async(food)=>{
+const getIngredientsNutrition = (rootFood)=>{
     let allNutrients = {};
-    const recurse = async (food)=>{
-        if(food&&food.ingredients){
-            await Promise.all(food.ingredients.map(async (ingredient)=>{
-                const food = await db.collection("foods").findOne({_id:ingredient.foodId});
-                if(food&&food.nutrients)
-                    Object.keys(food.nutrients).forEach((id)=>{
-                        const nutrient = food.nutrients[id];
+    const recurse = (food)=>{
+        if(food&&food.ingredientsData){
+            food.ingredients.map((ingredient)=>{
+                const ingredientData = food.ingredientsData.find((e)=>{
+                    return ingredient.foodId == e._id
+                })
+                if(ingredientData&&ingredientData.nutrients)
+                    Object.keys(ingredientData.nutrients).forEach((id)=>{
+                        const nutrient = ingredientData.nutrients[id];
                         if(allNutrients[id]){
                             allNutrients[id] += (nutrient/100)*ingredient.amount;
                         } else {
                             allNutrients[id] = (nutrient/100)*ingredient.amount;
                         }
                     })
-                await recurse(food);
-            }));
+                recurse(ingredientData);
+            });
         }
     }
-    await recurse(food);
+    recurse(rootFood);
     return allNutrients;
 }
 
@@ -197,7 +228,7 @@ const editFood = async (req, res)=>{
             food.nutrients[id] = parseInt(food.nutrients[id])
         })
         if(food._id){
-            dbRes.original = await db.collection("foods").findOne({_id: food._id});
+            dbRes.original = await loadFood(food._id);
             dbRes.save = await db.collection("foodsHistory").updateOne({_id:food._id}, {$push: {versions: dbRes.original}})
             dbRes.new = await db.collection("foods").updateOne({_id:food._id},{$set:food});
         } else {
@@ -214,10 +245,10 @@ const editFood = async (req, res)=>{
 const getHistory = async (req, res)=>{
     const _id = req.params._id;
     const dbRes = await db.collection("foodsHistory").findOne({_id})
-    await Promise.all(dbRes.versions.map(async (food)=>{
-        food.ingredientsNutritionTotal = await getIngredientsNutrition(food)
-        food.ingredientsCostTotal = await getIngredientsCost(food)
-    }))
+    dbRes.versions.map((food)=>{
+        food.ingredientsNutritionTotal = getIngredientsNutrition(food)
+        food.ingredientsCostTotal = getIngredientsCost(food)
+    })
     res.status(200).json(dbRes)
 }
 

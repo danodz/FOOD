@@ -34,6 +34,7 @@ function App() {
 export default App;
 
 const Wrapper = styled.div`
-  max-width: 1500px;
+  max-width: 1400px;
+  padding: 0 100px;
   margin: 0 auto;
 `

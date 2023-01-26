@@ -9,27 +9,6 @@ const DisplayFood = ({food})=>{
     const [ingredients, setIngredients] = useState([]);
     const [providers, setProviders] = useState([]);
 
-    const allNutrients = {}
-
-    food.ingredientsCostTotal = 0;
-    food.ingredientsNutritionTotal = {};
-    // if(food.ingredientsNutritionTotal)
-    //     Object.keys(food.ingredientsNutritionTotal).forEach((nutrient)=>{
-    //         if(allNutrients[nutrient]){
-    //             allNutrients[nutrient] += parseFloat(food.ingredientsNutritionTotal[nutrient]);
-    //         } else{
-    //             allNutrients[nutrient] = parseFloat(food.ingredientsNutritionTotal[nutrient]);
-    //         }
-    //     });
-    if(food.nutrients)
-        Object.keys(food.nutrients).forEach((nutrient)=>{
-            if(allNutrients[nutrient]){
-                allNutrients[nutrient] += parseFloat(food.nutrients[nutrient]);
-            } else{
-                allNutrients[nutrient] = parseFloat(food.nutrients[nutrient]);
-            }
-        });
-
     useEffect(()=>{
         if(food.providers){
             const mainProviders = {};
@@ -48,6 +27,7 @@ const DisplayFood = ({food})=>{
         }
     },[])
 
+    console.log(food)
     return (
         <Wrapper>
             <General>
@@ -75,8 +55,8 @@ const DisplayFood = ({food})=>{
             {food.nutrients&&<Nutrients>
                 <h1>Nutrients</h1>
                 <div className="section">
-                    {Object.keys(allNutrients).map((id)=>{
-                        return <DisplayNutrient key={id} id={id} value={allNutrients[id]}/>
+                    {Object.keys(food.allNutrients).map((id)=>{
+                        return <DisplayNutrient key={id} id={id} value={food.allNutrients[id]}/>
                     })}
                 </div>
                 <h1>Custom Nutrients</h1>
