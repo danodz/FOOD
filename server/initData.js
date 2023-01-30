@@ -63,6 +63,9 @@ const submit = async ()=>{
             anref: anref
         });
         console.log("writing")
+        if (!fs.existsSync("../client/src/data")){
+            fs.mkdirSync("../client/src/data");
+        }
         fs.writeFileSync("data/nutrients.json", nutrients)
         fs.writeFileSync("../client/src/data/nutrients.json", nutrients)
         console.log("done")
