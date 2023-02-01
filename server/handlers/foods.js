@@ -175,46 +175,45 @@ const loadFood = async (_id)=>{
     return food;
 }
 
-const getIngredientsCost = (food)=>{
+const getIngredientsCost = (rootFood)=>{
     let total = 0;
-    if(food.ingredientsData){
-        food.ingredients.map((ingredient)=>{
-            const ingredientData = food.ingredientsData.find((e)=>{
+    const recurse = (food)=>{
+            food.ingredients.map((ingredient)=>{
+            const ingredientData = rootFood.ingredientsData.find((e)=>{
                 return ingredient.foodId == e._id
             })
-            if(food){
-                const provider = food.providers.find((provider)=>{
-                    return provider._id === ingredient.provider
-                });
-                if(provider){
-                    total += (provider.price100g)/100 * ingredient.amount;
-                }
+            const provider = ingredientData.providers.find((provider)=>{
+                return provider._id === ingredient.provider
+            });
+            if(provider){
+                total += (provider.price100g)/100 * ingredient.amount;
             }
+            recurse(ingredientData);
         });
     }
+    recurse(rootFood)
     return total;
 }
 
 const getIngredientsNutrition = (rootFood)=>{
+    console.log(rootFood)
     let allNutrients = {};
     const recurse = (food)=>{
-        if(food&&food.ingredientsData){
-            food.ingredients.map((ingredient)=>{
-                const ingredientData = food.ingredientsData.find((e)=>{
-                    return ingredient.foodId == e._id
+        food.ingredients.map((ingredient)=>{
+            const ingredientData = rootFood.ingredientsData.find((e)=>{
+                return ingredient.foodId == e._id
+            })
+            if(ingredientData&&ingredientData.nutrients)
+                Object.keys(ingredientData.nutrients).forEach((id)=>{
+                    const nutrient = ingredientData.nutrients[id];
+                    if(allNutrients[id]){
+                        allNutrients[id] += (nutrient/100)*ingredient.amount;
+                    } else {
+                        allNutrients[id] = (nutrient/100)*ingredient.amount;
+                    }
                 })
-                if(ingredientData&&ingredientData.nutrients)
-                    Object.keys(ingredientData.nutrients).forEach((id)=>{
-                        const nutrient = ingredientData.nutrients[id];
-                        if(allNutrients[id]){
-                            allNutrients[id] += (nutrient/100)*ingredient.amount;
-                        } else {
-                            allNutrients[id] = (nutrient/100)*ingredient.amount;
-                        }
-                    })
-                recurse(ingredientData);
-            });
-        }
+            recurse(ingredientData);
+        });
     }
     recurse(rootFood);
     return allNutrients;
@@ -245,10 +244,6 @@ const editFood = async (req, res)=>{
 const getHistory = async (req, res)=>{
     const _id = req.params._id;
     const dbRes = await db.collection("foodsHistory").findOne({_id})
-    dbRes.versions.map((food)=>{
-        food.ingredientsNutritionTotal = getIngredientsNutrition(food)
-        food.ingredientsCostTotal = getIngredientsCost(food)
-    })
     res.status(200).json(dbRes)
 }
 
