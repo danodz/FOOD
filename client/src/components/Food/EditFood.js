@@ -137,7 +137,10 @@ const EditFood = ()=>{
     if(foodToEdit)
       food._id = foodToEdit._id;
     event.target.nutrients.querySelectorAll("fieldset").forEach((nutrient)=>{
-      food.nutrients[nutrient.querySelector("select").value] = nutrient.querySelector("input[name='value']").value;
+      const nutrientId = nutrient.querySelector("select").value;
+      const nutrientValue = nutrient.querySelector("input[name='value']").value;
+      if(nutrientId!=="none" && nutrientValue!=="")
+        food.nutrients[nutrientId] = nutrientValue;
     });
     event.target.tags.querySelectorAll("fieldset").forEach((tag)=>{
       food.tags.push( {
