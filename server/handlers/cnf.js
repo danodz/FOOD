@@ -3,7 +3,7 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { v4: uuidv4 } = require("uuid");
 
 const search = async (req, res)=>{
-    const name = req.params.name;
+    const searchWords = req.params.name;
     const namesRequest = new XMLHttpRequest();
     //The api doesn't seem to have search by name functionality, so I have to load all the names
     namesRequest.open("GET", "https://aliments-nutrition.canada.ca/api/fichier-canadien-elements-nutritifs/food/?type=json", true);
@@ -11,7 +11,9 @@ const search = async (req, res)=>{
         if (namesRequest.readyState === 4 && namesRequest.status === 200)
         {
             const result = JSON.parse(namesRequest.responseText).filter((food)=>{
-                return food.food_description.toLowerCase().includes(name.toLowerCase());
+                return searchWords.split(" ").every((word)=>{
+                    return food.food_description.toLowerCase().includes(word.toLowerCase());
+                })
             }).map((food)=>{
                 return {
                     name: food.food_description,
