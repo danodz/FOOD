@@ -59,7 +59,6 @@ const searchFoods = async (req, res)=>{
             return match;
         });
     }
-    console.log(nutrientMatches)
 
     //filter by search terms - sort - skip - limit
     const allFoods = await db.collection("foods").aggregate([
@@ -196,7 +195,6 @@ const getIngredientsCost = (rootFood)=>{
 }
 
 const getIngredientsNutrition = (rootFood)=>{
-    console.log(rootFood)
     let allNutrients = {};
     const recurse = (food)=>{
         food.ingredients.map((ingredient)=>{
