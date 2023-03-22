@@ -27,7 +27,6 @@ const DisplayFood = ({food})=>{
         }
     },[])
 
-    console.log(food)
     return (
         <Wrapper>
             <General>

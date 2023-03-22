@@ -12,12 +12,13 @@ const useComparer = ()=>{
     const [items, setItems] = useState(loadItems());
 
     const add = (_id)=>{
-        const newItems = [...items, _id]
+        const newItems = [...loadItems(), _id]
+        console.log(newItems)
         localStorage.setItem("comparer", JSON.stringify(newItems))
         setItems(newItems)
     }
     const remove = (_id)=>{
-        const newItems = [...items]
+        const newItems = [...loadItems()]
         const index = newItems.findIndex((id)=>id===_id)
         newItems.splice(index,1)
         localStorage.setItem("comparer",JSON.stringify(newItems))
