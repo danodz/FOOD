@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -8,6 +9,9 @@ import FoodListItem from "./FoodListItem";
 const DisplayFood = ({food})=>{
     const [ingredients, setIngredients] = useState([]);
     const [providers, setProviders] = useState([]);
+    const nutrientsToggler = useRef(null);
+    const customToggler = useRef(null);
+    const ingredientsToggler = useRef(null);
 
     useEffect(()=>{
         if(food.providers){
@@ -53,21 +57,30 @@ const DisplayFood = ({food})=>{
             </Tags>}
             {food.nutrients&&<Nutrients>
                 <h1>Nutrients</h1>
+                <Toggler ref={nutrientsToggler}>
+                    toggle display favorites
+                </Toggler>
                 <div className="section">
                     {Object.keys(food.allNutrients).map((id)=>{
-                        return <DisplayNutrient key={id} id={id} value={food.allNutrients[id]}/>
+                        return <DisplayNutrient key={id} id={id} value={food.allNutrients[id]} toggler={nutrientsToggler}/>
                     })}
                 </div>
                 <h1>Custom Nutrients</h1>
+                <Toggler ref={customToggler}>
+                    toggle display favorites
+                </Toggler>
                 <div className="section">
                     {Object.keys(food.nutrients).map((id)=>{
-                        return <DisplayNutrient key={id} id={id} value={food.nutrients[id]}/>
+                        return <DisplayNutrient key={id} id={id} value={food.nutrients[id]} toggler={customToggler}/>
                     })}
                 </div>
                 <h1>Ingredients Nutrients</h1>
+                <Toggler ref={ingredientsToggler}>
+                    toggle display favorites
+                </Toggler>
                 <div className="section">
                     {Object.keys(food.ingredientsNutritionTotal).map((id)=>{
-                        return <DisplayNutrient key={id} id={id} value={food.ingredientsNutritionTotal[id]}/>
+                        return <DisplayNutrient key={id} id={id} value={food.ingredientsNutritionTotal[id]} toggler={customToggler}/>
                     })}
                 </div>
             </Nutrients>}
@@ -124,7 +137,6 @@ const Nutrients = styled.div`
     .section{
         display: flex;
     }
-
 `
 
 const Ingredients = styled.div`
@@ -142,4 +154,7 @@ const Tags = styled.div`
         display: none;
         margin:0;
     }
+`
+
+const Toggler = styled.button`
 `

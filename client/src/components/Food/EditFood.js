@@ -192,6 +192,12 @@ const EditFood = ()=>{
     setDefaultName("");
   }
 
+  const clearNonFavorite = ()=>{
+    setNutrients(nutrients.filter((nutrient)=>{
+      return user.nutrients.includes(nutrient._id.toString())
+    }))
+  }
+
   return ( <>
     <CNFSearch handleCnfData={handleCnfData}/>
 
@@ -211,6 +217,7 @@ const EditFood = ()=>{
         <FormInput label="Tag" name="tag"/>
       </FormList>
 
+      <button type="button" onClick={clearNonFavorite}>Clear non favorite</button>
       <FormList name="nutrients" values={nutrients} setValues={setNutrients}>
           <SelectNutrient name="nutrient"/>
           <FormInput type="number" min="0" step="any" label="Value" name="value" />
