@@ -25,7 +25,7 @@ const FoodListItem = ({food})=>{
     return <Wrapper key={food._id}>
         <div className="name">
             {food.amount&&food.amount+"g of "}
-            {food.owner&&food.owner.name+"'s "}
+            <span className="bold">{food.owner&&food.owner.name+"'s "}</span>
             {food.name}
         </div>
         {owned&&<Link to={"/editFood?_id="+food._id}>Edit</Link>}
@@ -39,16 +39,18 @@ export default FoodListItem;
 
 const Wrapper = styled.div`
     padding-bottom: 10px;
+    margin-top: 15px;
     margin-bottom: 15px;
     border-bottom: 1px solid lightgray;
     display: flex;
 
     .name{
         width: 200px;
-        display: flex;
-        justify-content: center;
-        align-content: center;
-        flex-direction: column;
+        text-align: left;
+
+        .bold{
+            font-weight: bold;
+        }
     }
 
     a,button{

@@ -30,7 +30,6 @@ const DisplayFood = ({food})=>{
             setProviders([])
         }
     },[])
-
     return (
         <Wrapper>
             <General>
@@ -84,10 +83,10 @@ const DisplayFood = ({food})=>{
                     })}
                 </div>
             </Nutrients>}
-            {ingredients&&<Ingredients>
+            {food.ingredientsData&&<Ingredients>
                 <h1>Ingredients</h1>
                 <div className="section">
-                    {ingredients.map((ingredient)=>{
+                    {food.ingredientsData.map((ingredient)=>{
                         return <span key={ingredient._id}>{ingredient&&<FoodListItem food={ingredient}/>}</span>
                     })}
                 </div>
