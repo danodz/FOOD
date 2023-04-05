@@ -22,11 +22,11 @@ const EditFood = ()=>{
   const [foodToEdit, setFoodToEdit] = useState(null);
   const [defaultName, setDefaultName] = useState(null);
 
-  const [nutrients, setNutrients] = useState(
-    user.nutrients
+  const favoriteNutrients = user.nutrients
     ?user.nutrients.map((nutrient)=>{return {_id:nutrient,nutrient:nutrient}})
-    :[]
-    );
+    :[];
+
+  const [nutrients, setNutrients] = useState(favoriteNutrients);
   const [tags, setTags] = useState([]);
   const [measures, setMeasures] = useState([]);
   const [providers, setProviders] = useState([]);
@@ -79,7 +79,7 @@ const EditFood = ()=>{
             name: providersData[provider.providerId].name,
             format: provider.format,
             price: provider.price,
-            price100g: provider.price100g
+            pricePerPortion: provider.pricePerPortion
           }
         })));
       }
@@ -123,6 +123,8 @@ const EditFood = ()=>{
     const food = {
       name: event.target.general.querySelector("input[name='name']").value,
       description: event.target.general.querySelector("input[name='description']").value,
+      portionG: parseInt(event.target.general.querySelector("input[name='portionG']").value),
+      portionMl: parseInt(event.target.general.querySelector("input[name='portionMl']").value),
       nutrients: {},
       tags: [],
       measures: [],
@@ -161,7 +163,7 @@ const EditFood = ()=>{
         providerId: provider.querySelector("input[name='providerId']").value,
         format: provider.querySelector("input[name='format']").value,
         price: provider.querySelector("input[name='price']").value,
-        price100g: provider.querySelector("input[name='price100g']").value
+        pricePerPortion: provider.querySelector("input[name='pricePerPortion']").value
       });
       
     });
@@ -190,6 +192,11 @@ const EditFood = ()=>{
     setImages([])
     setQuery(query)
     setDefaultName("");
+    setNutrients(favoriteNutrients)
+    setTags([]);
+    setMeasures([]);
+    setProviders([]);
+    setIngredients([]);
   }
 
   const clearNonFavorite = ()=>{
@@ -209,6 +216,8 @@ const EditFood = ()=>{
       <General name="general">
         <FormInput required label="Name" name="name" defaultValue={defaultName&&defaultName}/>
         <FormInput label="Description" name="description" defaultValue={foodToEdit&&foodToEdit.description}/>
+        <FormInput required label="Portion in g" name="portionG" defaultValue={foodToEdit?foodToEdit.portionG:100}/>
+        <FormInput label="Portion in ml" name="portionMl" defaultValue={foodToEdit&&foodToEdit.portionMl}/>
         <ImageUpload images={images} onChange={onImageChange} maxNumber={1}/>
       </General>
       <Line></Line>
@@ -234,7 +243,7 @@ const EditFood = ()=>{
         <FormHidden label="id" name="providerId"/>
         <FormInput label="Buying format" name="format"/>
         <FormInput type="number" min="0" step="0.01" label="Price" name="price"/>
-        <FormInput type="number" min="0" step="0.01" label="Price per 100g" name="price100g"/>
+        <FormInput type="number" min="0" step="0.01" label="Price per portion" name="pricePerPortion"/>
       </FormList>
 
       <FormList searchAdder={<ChooseFood foods={ingredients} setFoods={setIngredients}/>} name="ingredients" values={ingredients} setValues={setIngredients} noAdd={true}>

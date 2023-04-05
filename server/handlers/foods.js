@@ -185,7 +185,7 @@ const getIngredientsCost = (rootFood)=>{
                 return provider._id === ingredient.provider
             });
             if(provider){
-                total += (provider.price100g)/100 * ingredient.amount;
+                total += (provider.pricePerPortion)/food.portionG * ingredient.amount;
             }
             recurse(ingredientData);
         });
@@ -205,9 +205,9 @@ const getIngredientsNutrition = (rootFood)=>{
                 Object.keys(ingredientData.nutrients).forEach((id)=>{
                     const nutrient = ingredientData.nutrients[id];
                     if(allNutrients[id]){
-                        allNutrients[id] += (nutrient/100)*ingredient.amount;
+                        allNutrients[id] += (nutrient/ingredientData.portionG)*ingredient.amount;
                     } else {
-                        allNutrients[id] = (nutrient/100)*ingredient.amount;
+                        allNutrients[id] = (nutrient/ingredientData.portionG)*ingredient.amount;
                     }
                 })
             recurse(ingredientData);
