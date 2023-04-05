@@ -4,11 +4,11 @@ import Compare from "./Food/Compare";
 import Food from "./Food/Food";
 import SearchFoods from "./Food/SearchFoods";
 import Navigation from "./Navigation";
-import Foods from "./user/Foods";
 import Profile from "./user/Profile";
-import Providers from "./user/Providers";
 import RequireUser from "./user/RequireUser";
 import SignForm from "./user/SignForm";
+import EditFood from "./Food/EditFood";
+import EditProvider from "./Providers/EditProvider";
 
 function App() {
 
@@ -20,8 +20,8 @@ function App() {
           <Route path="/" element={<Navigate to="/profile" /> }/>
           <Route path="/signin" element={<SignForm/>}/>
           <Route path="/profile" element={<RequireUser><Profile/></RequireUser>}/>
-          <Route path="/editFood" element={<RequireUser><Foods/></RequireUser>}/>
-          <Route path="/editProvider" element={<RequireUser><Providers/></RequireUser>}/>
+          <Route path="/editFood" element={<RequireUser><EditFood/></RequireUser>}/>
+          <Route path="/editProvider" element={<RequireUser><EditProvider/></RequireUser>}/>
           <Route path="/searchFoods" element={<SearchFoods/>}/>
           <Route path="/food/:_id" element={<Food/>}/>
           <Route path="/compare" element={<Compare/>}/>
