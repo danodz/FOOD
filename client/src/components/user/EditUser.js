@@ -23,7 +23,7 @@ const EditUser = ()=>{
             address: fields.address.value,
             nutrients: []
         }
-        event.target.querySelectorAll("select").forEach((select)=>{
+        event.target.querySelectorAll("input[name='nutrient']").forEach((select)=>{
             if(select.value !== "none")
                 update.nutrients.push(select.value)
         })
